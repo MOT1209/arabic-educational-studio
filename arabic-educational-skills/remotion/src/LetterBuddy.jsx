@@ -4,7 +4,9 @@ import data from './data/glyphs.json';
 
 // «الحرف شخصية»: جسم الشخصية هو الحرف نفسه من الخط الحقيقي، والوجه يوضع في أسمك نقطة داخل الحرف (محسوبة مسبقاً).
 // الفم: من غلاف الصوت المسجَّل إن وُجد (mouth[frame] بين 0 و1)، وإلا حركة منتظمة أثناء نوافذ الكلام.
-export const LetterBuddy = ({letter, theme, L, speaking, mouth, mood = 'normal'}) => {
+// Enhanced LetterBuddy with state controls, lip-sync, and speech bubble
+// mood: 'normal' | 'happy' | 'explaining' | 'thinking' | 'asking'
+export const LetterBuddy = ({letter, theme, L, speaking, mouth, mood = 'normal', speechBubble = null, color}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const g = data.glyphs[letter] || data.glyphs['ض'];
@@ -21,6 +23,7 @@ export const LetterBuddy = ({letter, theme, L, speaking, mouth, mood = 'normal'}
   else open = speaking ? 0.25 + 0.75 * Math.abs(Math.sin(frame * 0.9)) * (0.6 + 0.4 * Math.abs(Math.sin(frame * 0.37))) : 0;
   const bob = Math.sin(frame / 14) * 10 + (speaking ? Math.sin(frame / 3) * 3 : 0);
   const look = mood === 'think' ? {dx: e * 0.25, dy: e * 0.3} : {dx: Math.sin(frame / 40) * e * 0.15, dy: 0};
+  const accentColor = color || theme.accent;
   const outline = theme.ink === '#F8FAFC' || theme.ink === '#F1F5F9' ? '#0B1220' : theme.ink;
   return (
     <div style={{position: 'absolute', left: L.avatar.left, bottom: L.avatar.bottom, width: w * scale, height: h * scale,
@@ -28,7 +31,7 @@ export const LetterBuddy = ({letter, theme, L, speaking, mouth, mood = 'normal'}
       <svg width={w * scale} height={h * scale} viewBox={`${x0 - pad} ${-(y1 + pad)} ${w} ${h}`} style={{overflow: 'visible'}}>
         <ellipse cx={(x0 + x1) / 2} cy={-(y0 - pad * 0.55)} rx={(x1 - x0) * 0.42} ry={34} fill="rgba(0,0,0,.14)" />
         <g transform="scale(1,-1)">
-          <path d={g.d} fill={theme.accent} stroke={outline} strokeWidth={26} strokeLinejoin="round" />
+          <path d={g.d} fill={accentColor} stroke={outline} strokeWidth={26} strokeLinejoin="round" />
           {/* الوجه */}
           <g transform={`translate(${f.x} ${f.y + e * 0.2})`}>
             {[-1, 1].map((s) => (
@@ -47,6 +50,26 @@ export const LetterBuddy = ({letter, theme, L, speaking, mouth, mood = 'normal'}
           </g>
         </g>
       </svg>
+    {speechBubble && (
+      <div style={{
+        position: 'absolute',
+        top: -60,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        background: theme.cardBg || 'rgba(255,255,255,0.95)',
+        color: theme.text || '#1a1a1a',
+        padding: '8px 16px',
+        borderRadius: 12,
+        fontSize: 18,
+        fontWeight: 'bold',
+        whiteSpace: 'nowrap',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+        direction: 'rtl',
+        border: `2px solid ${theme.accent || '#3b82f6'}`,
+      }}>
+        {speechBubble}
+      </div>
+    )}
     </div>
   );
 };
