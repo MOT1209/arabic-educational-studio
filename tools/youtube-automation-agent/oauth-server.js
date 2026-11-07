@@ -2,6 +2,8 @@ const express = require('express');
 const { google } = require('googleapis');
 const fs = require('fs');
 const path = require('path');
+
+function esc(v) { return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
 const chalk = require('chalk');
 
 class OAuthServer {
@@ -16,7 +18,7 @@ class OAuthServer {
       const { code, error } = req.query;
       
       if (error) {
-        res.send(`<h1>❌ Authentication Error</h1><p>${error}</p>`);
+        res.send(`<h1>❌ Authentication Error</h1><p>${esc(error)}</p>`);
         return;
       }
 
@@ -49,7 +51,7 @@ class OAuthServer {
         
       } catch (error) {
         console.error(chalk.red('Token exchange failed:'), error);
-        res.send(`<h1>❌ Token Exchange Failed</h1><p>${error.message}</p>`);
+        res.send(`<h1>❌ Token Exchange Failed</h1><p>${esc(error.message)}</p>`);
       }
     });
 

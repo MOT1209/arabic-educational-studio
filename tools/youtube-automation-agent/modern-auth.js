@@ -4,6 +4,7 @@ const path = require('path');
 const chalk = require('chalk');
 const http = require('http');
 const { URL } = require('url');
+function esc(v) { return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
 
 class ModernAuth {
   constructor() {
@@ -58,15 +59,22 @@ class ModernAuth {
       console.log(chalk.cyan('🔗 Please visit this URL to authorize:'));
       console.log(chalk.blue(authUrl));
 
-      // Best effort: open the URL in the default browser
-      const { exec } = require('child_process');
-      const openCommands = {
-        win32: `start "" "${authUrl}"`,
-        darwin: `open "${authUrl}"`,
-        linux: `xdg-open "${authUrl}"`
-      };
-      if (openCommands[process.platform]) {
-        exec(openCommands[process.platform], () => {});
+      // Best effort: open the URL in the default browser (no shell interpolation)
+      const { spawn } = require('child_process');
+      if (!/^https?:\/\//i.test(authUrl)) {
+        console.warn(chalk.yellow('Refusing to open non-http(s) URL'));
+      } else {
+        const opener = process.platform === 'win32'
+          ? { cmd: 'cmd', args: ['/c', 'start', '', authUrl] }
+          : process.platform === 'darwin'
+            ? { cmd: 'open', args: [authUrl] }
+            : { cmd: 'xdg-open', args: [authUrl] };
+        try {
+          const child = spawn(opener.cmd, opener.args, { detached: true, stdio: 'ignore', shell: false });
+          child.unref();
+        } catch (_e) {
+          // Best effort only
+        }
       }
       console.log(chalk.yellow(`\n⚡ A temporary server is running on port ${redirect.port}`));
       console.log(chalk.yellow('After authorization, you\'ll be redirected automatically.'));
@@ -121,7 +129,7 @@ class ModernAuth {
           res.writeHead(400, { 'Content-Type': 'text/html' });
           res.end(`
             <h1>❌ Authorization Error</h1>
-            <p>${error}</p>
+            <p>${esc(error)}</p>
             <p>You can close this window.</p>
           `);
           this.rejectAuth(new Error(`Authorization error: ${error}`));
@@ -157,7 +165,7 @@ class ModernAuth {
             res.writeHead(500, { 'Content-Type': 'text/html' });
             res.end(`
               <h1>❌ Token Exchange Failed</h1>
-              <p>${tokenError.message}</p>
+              <p>${esc(tokenError.message)}</p>
             `);
             this.rejectAuth(tokenError);
           }
