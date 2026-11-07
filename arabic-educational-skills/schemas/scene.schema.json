@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Rich scene spec (scriptwriter engine input)",
+  "type": "object",
+  "required": [
+    "scene_id",
+    "purpose",
+    "duration",
+    "narration",
+    "visual_description"
+  ],
+  "properties": {
+    "scene_id": {
+      "type": "string",
+      "pattern": "^scene_\\d{2,3}$"
+    },
+    "purpose": {
+      "type": "string"
+    },
+    "duration": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "narration": {
+      "type": "string"
+    },
+    "dialogue": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "character",
+          "text"
+        ],
+        "properties": {
+          "character": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "visual_description": {
+      "type": "string"
+    },
+    "camera": {
+      "type": "string"
+    },
+    "animation": {
+      "type": "string"
+    },
+    "on_screen_text": {
+      "type": "string"
+    },
+    "audio": {
+      "type": "object",
+      "properties": {
+        "sfx": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "music": {
+          "type": "string"
+        }
+      }
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "transition": {
+      "type": "string"
+    },
+    "educational_objective": {
+      "type": "string"
+    },
+    "pause_for_repetition_seconds": {
+      "type": "number",
+      "minimum": 0
+    }
+  }
+}

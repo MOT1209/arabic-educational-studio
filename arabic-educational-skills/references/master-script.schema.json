@@ -1,0 +1,458 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Arabic Educational Master Script",
+  "type": "object",
+  "required": [
+    "version",
+    "lesson",
+    "language",
+    "target_level",
+    "objectives",
+    "output",
+    "scenes"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?$"
+    },
+    "lesson": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subject": {
+      "type": "string",
+      "enum": [
+        "nahw",
+        "sarf",
+        "imla",
+        "reading",
+        "writing",
+        "balagha",
+        "adab",
+        "phonetics",
+        "vocabulary",
+        "other"
+      ]
+    },
+    "language": {
+      "const": "ar"
+    },
+    "target_level": {
+      "type": "string",
+      "enum": [
+        "child",
+        "beginner",
+        "intermediate",
+        "advanced"
+      ]
+    },
+    "objectives": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "style": {
+      "type": "string"
+    },
+    "characters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "card": {
+            "type": "string",
+            "description": "مسار بطاقة الشخصية"
+          },
+          "tts_voice": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "references": {
+      "type": "array",
+      "description": "مراجع الشواهد والقواعد",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "citation"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "citation": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "required": [
+        "width",
+        "height",
+        "fps"
+      ],
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 240
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 240
+        },
+        "fps": {
+          "type": "integer",
+          "minimum": 12,
+          "maximum": 60
+        },
+        "formats": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1"
+            ]
+          }
+        }
+      }
+    },
+    "scenes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/scene"
+      }
+    }
+  },
+  "$defs": {
+    "arabic_text": {
+      "type": "object",
+      "required": [
+        "text_diacritized",
+        "text_plain"
+      ],
+      "properties": {
+        "text_diacritized": {
+          "type": "string",
+          "minLength": 1
+        },
+        "text_plain": {
+          "type": "string",
+          "minLength": 1
+        },
+        "direction": {
+          "const": "rtl"
+        },
+        "font": {
+          "type": "string"
+        },
+        "reference": {
+          "type": "string",
+          "description": "معرّف في references لشاهد أدبي أو ديني"
+        }
+      }
+    },
+    "scene": {
+      "type": "object",
+      "required": [
+        "id",
+        "duration_seconds",
+        "learning_goal",
+        "dialogue",
+        "visuals"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^scene_\\d{2,3}$"
+        },
+        "hash": {
+          "type": "string",
+          "description": "بصمة المحتوى؛ يحدّثها validate_script.py --update-hashes"
+        },
+        "duration_seconds": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "learning_goal": {
+          "type": "string",
+          "minLength": 1
+        },
+        "background": {
+          "type": "string"
+        },
+        "characters": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "camera": {
+          "type": "string"
+        },
+        "transition": {
+          "type": "string",
+          "description": "fade = تلاشٍ في آخر المشهد"
+        },
+        "dialogue": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "character",
+              "text_diacritized",
+              "text_plain",
+              "start",
+              "end"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_\\-]+$",
+                "description": "معرّف ثابت للسطر يُسمّى به ملف الصوت؛ يُثبَّت بـ validate_script.py --update-hashes"
+              },
+              "character": {
+                "type": "string"
+              },
+              "text_diacritized": {
+                "type": "string"
+              },
+              "text_plain": {
+                "type": "string"
+              },
+              "tts_text": {
+                "type": "string"
+              },
+              "start": {
+                "type": "number",
+                "minimum": 0
+              },
+              "end": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "emotion": {
+                "type": "string"
+              },
+              "caption_text": {
+                "type": "string",
+                "description": "نص بديل يظهر في الترجمة المحروقة وملف SRT بدل text_diacritized (مثل سؤال استماع لا يكشف إجابته)"
+              },
+              "pause_after_for_repeat": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "visuals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "type",
+              "start",
+              "end"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "arabic_text",
+                  "image",
+                  "shape",
+                  "highlight",
+                  "animation",
+                  "quiz",
+                  "callout",
+                  "badge",
+                  "letter_card",
+                  "letter_highlight",
+                  "cue"
+                ]
+              },
+              "start": {
+                "type": "number",
+                "minimum": 0
+              },
+              "end": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "text_diacritized": {
+                "type": "string"
+              },
+              "text_plain": {
+                "type": "string"
+              },
+              "direction": {
+                "const": "rtl"
+              },
+              "color_role": {
+                "type": "string",
+                "description": "وظيفة نحوية ثابتة اللون"
+              },
+              "asset": {
+                "type": "string"
+              },
+              "note": {
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "wrong",
+                  "right"
+                ]
+              },
+              "tag": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "wrong",
+                  "right"
+                ]
+              },
+              "layout": {
+                "enum": [
+                  "rows",
+                  "row"
+                ]
+              },
+              "options": {
+                "type": "array",
+                "minItems": 2,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "text_diacritized",
+                    "text_plain"
+                  ],
+                  "properties": {
+                    "text_diacritized": {
+                      "type": "string"
+                    },
+                    "text_plain": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "answer_index": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "countdown_from": {
+                "type": "number"
+              },
+              "reveal": {
+                "type": "number"
+              },
+              "prompt_diacritized": {
+                "type": "string"
+              },
+              "prompt_plain": {
+                "type": "string"
+              },
+              "from_mark": {
+                "type": "string"
+              },
+              "to_mark": {
+                "type": "string"
+              },
+              "label_from": {
+                "type": "string"
+              },
+              "label_to": {
+                "type": "string"
+              },
+              "reference": {
+                "type": "string",
+                "description": "معرّف في references لشاهد موثق"
+              },
+              "letter": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "forms": {
+                "type": "object"
+              },
+              "show_forms": {
+                "type": "boolean"
+              },
+              "highlight_indices": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "highlight_tokens": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "size": {
+                "enum": [
+                  "xl"
+                ]
+              },
+              "role": {
+                "enum": [
+                  "syllables",
+                  "contrast_example"
+                ]
+              },
+              "text": {
+                "type": "string"
+              },
+              "illustrable": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "audio_effects": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "enter": {
+          "type": "object",
+          "description": "زمن دخول كل شخصية (ث) بحركة؛ 0 = حاضرة من البداية",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0
+          }
+        }
+      }
+    }
+  }
+}

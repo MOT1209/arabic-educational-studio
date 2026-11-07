@@ -1,0 +1,82 @@
+{
+  "_note": "ما يصيّره المحرك فعلاً. حدّث هذا الملف عند إضافة شخصية أو نوع مرئي إلى scene_template.html.",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "characters": {
+    "teacher": {
+      "slot": [
+        100,
+        342
+      ],
+      "desc": "معلم كرتوني بنظارات (يسار السبورة)",
+      "gender": "m"
+    },
+    "inna": {
+      "slot": [
+        1560,
+        382
+      ],
+      "desc": "شخصية «إنَّ» الساحرة بعصا وشرارات (يمين)",
+      "gender": "f"
+    },
+    "student": {
+      "slot": [
+        1560,
+        382
+      ],
+      "slot_with_inna": [
+        520,
+        425
+      ],
+      "desc": "طالبة (يمين، أو أمام السبورة إن حضرت إنَّ) — خاطبها بالمؤنث",
+      "gender": "f"
+    }
+  },
+  "rendered_visuals": [
+    "arabic_text",
+    "highlight",
+    "badge",
+    "quiz",
+    "letter_card",
+    "letter_highlight",
+    "cue",
+    "image"
+  ],
+  "descriptive_only_visuals": [
+    "animation",
+    "callout",
+    "shape"
+  ],
+  "emotions": [
+    "مرح",
+    "حماس",
+    "فرح",
+    "تشويق",
+    "استغراب",
+    "متردد",
+    "تشجيع"
+  ],
+  "color_roles": {
+    "blue": "أي دور لا يحتوي «خبر»",
+    "green": "أي دور يحتوي «خبر»"
+  },
+  "quiz": {
+    "max_options": 3,
+    "countdown_seconds": 3,
+    "layouts": ["rows", "row"],
+    "labels": ["letters", "digits"]
+  },
+  "board_max_words": 6,
+  "kids_layer": {
+    "image": "يُعرض الملف إن وُجد مساره، وإلا مكان محجوز موسوم [ image: concept ] — لا يُولَّد رسم تلقائياً",
+    "text_sizes": [
+      "xl"
+    ],
+    "text_roles": [
+      "syllables",
+      "contrast_example"
+    ]
+  }
+}

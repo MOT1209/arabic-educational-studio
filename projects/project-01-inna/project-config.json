@@ -1,0 +1,20 @@
+{
+  "project_name": "project-01-inna",
+  "lesson": "إنَّ وأخواتها: القاعدة الأساسية (الدرس 1 — إنَّ)",
+  "channel": {
+    "youtube": "https://www.youtube.com/@%D9%85%D8%AF%D8%B1%D8%B3%D8%AA%D9%8A-%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9",
+    "tiktok": "https://www.tiktok.com/@arbic.skool"
+  },
+  "audience": "beginner (ناشئ 10–13)",
+  "platforms": ["youtube-16:9", "tiktok-9:16"],
+  "video_files": {
+    "youtube_long": "youtube/long-form/video-01-youtube.mp4",
+    "youtube_voiced": "youtube/long-form/video-01-inna-voiced.mp4"
+  },
+  "thumbnail": "youtube/thumbnails/thumbnail-1280x720.jpg",
+  "metadata": "youtube/metadata/youtube-metadata.md",
+  "skill_version": "1.0.0",
+  "created": "2026-11-07",
+  "status": "production-complete",
+  "notes": "النص (dialogue) مُعاد بناؤه من فصول youtube-metadata.md — يحتاج مراجعة معلم للتأكد من تطابقه مع الفيديو الفعلي"
+}

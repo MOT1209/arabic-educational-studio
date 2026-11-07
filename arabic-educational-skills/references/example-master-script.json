@@ -1,0 +1,265 @@
+{
+  "version": "1.0.0",
+  "lesson": "إنَّ وأخواتها: إنَّ تنصب الاسم وترفع الخبر",
+  "subject": "nahw",
+  "language": "ar",
+  "target_level": "beginner",
+  "objectives": [
+    "يميّز المشاهد اسم إنَّ المنصوب من خبرها المرفوع ويختار الجملة الصحيحة من ثلاث"
+  ],
+  "style": "فصل كرتوني: سبورة + معلم + طالب + شخصية «إنَّ»",
+  "characters": [
+    {
+      "id": "teacher",
+      "name": "الأستاذ سامي",
+      "role": "يشرح ويصحّح"
+    },
+    {
+      "id": "student",
+      "name": "سلمى",
+      "role": "تقع في الخطأ الشائع ثم تصححه"
+    },
+    {
+      "id": "inna",
+      "name": "إنَّ",
+      "role": "تجسيد الحرف الناسخ"
+    }
+  ],
+  "references": [],
+  "output": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "formats": [
+      "16:9"
+    ]
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "duration_seconds": 9,
+      "learning_goal": "خطّاف: الخطأ الشائع «إنَّ الطالبُ»",
+      "background": "classroom",
+      "camera": "ثابتة",
+      "characters": [
+        "teacher",
+        "student"
+      ],
+      "dialogue": [
+        {
+          "character": "student",
+          "text_diacritized": "إِنَّ الطَّالِبُ مُجْتَهِدٌ",
+          "text_plain": "إن الطالب مجتهد",
+          "start": 1,
+          "end": 3.5,
+          "emotion": "حماس",
+          "id": "scene_01_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "انْتَبِهِي! مَاذَا تَفْعَلُ إِنَّ بِالِاسْمِ بَعْدَهَا؟",
+          "text_plain": "انتبهي! ماذا تفعل إن بالاسم بعدها؟",
+          "start": 4,
+          "end": 8.5,
+          "emotion": "استغراب",
+          "id": "scene_01_02"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "إِنَّ الطَّالِبُ مُجْتَهِدٌ",
+          "text_plain": "إن الطالب مجتهد",
+          "direction": "rtl",
+          "start": 1,
+          "end": 9,
+          "status": "wrong"
+        },
+        {
+          "type": "badge",
+          "kind": "wrong",
+          "start": 4,
+          "end": 9
+        }
+      ],
+      "hash": "6fe402e07a9f"
+    },
+    {
+      "id": "scene_02",
+      "duration_seconds": 12,
+      "learning_goal": "القاعدة: إنَّ تنصب الاسم وترفع الخبر",
+      "background": "classroom",
+      "camera": "ثابتة",
+      "characters": [
+        "teacher",
+        "inna"
+      ],
+      "dialogue": [
+        {
+          "character": "inna",
+          "text_diacritized": "أَنَا إِنَّ! أَنْصِبُ الِاسْمَ وَأَرْفَعُ الْخَبَرَ.",
+          "text_plain": "أنا إن! أنصب الاسم وأرفع الخبر.",
+          "start": 1.5,
+          "end": 5.5,
+          "emotion": "مرح",
+          "id": "scene_02_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "الطَّالِبَ اسْمُ إِنَّ مَنْصُوبٌ، وَمُجْتَهِدٌ خَبَرُهَا مَرْفُوعٌ.",
+          "text_plain": "الطالب اسم إن منصوب، ومجتهد خبرها مرفوع.",
+          "start": 6.5,
+          "end": 11.5,
+          "id": "scene_02_02"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "الطَّالِبُ مُجْتَهِدٌ",
+          "text_plain": "الطالب مجتهد",
+          "direction": "rtl",
+          "start": 0.3,
+          "end": 5.5
+        },
+        {
+          "type": "arabic_text",
+          "text_diacritized": "إِنَّ الطَّالِبَ مُجْتَهِدٌ",
+          "text_plain": "إن الطالب مجتهد",
+          "direction": "rtl",
+          "start": 5.5,
+          "end": 12
+        },
+        {
+          "type": "highlight",
+          "text_diacritized": "الطَّالِبَ",
+          "text_plain": "الطالب",
+          "color_role": "اسم إن",
+          "start": 7,
+          "end": 12,
+          "tag": "اسمُ إنَّ"
+        },
+        {
+          "type": "highlight",
+          "text_diacritized": "مُجْتَهِدٌ",
+          "text_plain": "مجتهد",
+          "color_role": "خبر إن",
+          "start": 9,
+          "end": 12,
+          "tag": "خبرُها"
+        }
+      ],
+      "enter": {
+        "inna": 0.5
+      },
+      "hash": "df0ca048304e"
+    },
+    {
+      "id": "scene_03",
+      "duration_seconds": 9,
+      "learning_goal": "التصحيح وتثبيت الصواب",
+      "background": "classroom",
+      "camera": "ثابتة",
+      "characters": [
+        "teacher",
+        "student"
+      ],
+      "dialogue": [
+        {
+          "character": "student",
+          "text_diacritized": "إِنَّ الطَّالِبَ مُجْتَهِدٌ",
+          "text_plain": "إن الطالب مجتهد",
+          "start": 1,
+          "end": 4,
+          "emotion": "فرح",
+          "id": "scene_03_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "أَحْسَنْتِ! هَذَا هُوَ الصَّوَابُ.",
+          "text_plain": "أحسنت! هذا هو الصواب.",
+          "start": 5,
+          "end": 8.5,
+          "emotion": "تشجيع",
+          "id": "scene_03_02"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "إِنَّ الطَّالِبَ مُجْتَهِدٌ",
+          "text_plain": "إن الطالب مجتهد",
+          "direction": "rtl",
+          "start": 0.3,
+          "end": 9,
+          "status": "right"
+        },
+        {
+          "type": "badge",
+          "kind": "right",
+          "start": 1.5,
+          "end": 9
+        }
+      ],
+      "hash": "5f3ed8a98b45"
+    },
+    {
+      "id": "scene_04",
+      "duration_seconds": 14,
+      "learning_goal": "تمرين: اختيار الجملة الصحيحة",
+      "background": "classroom",
+      "camera": "ثابتة",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "اخْتَرِ الْجُمْلَةَ الصَّحِيحَةَ.",
+          "text_plain": "اختر الجملة الصحيحة.",
+          "start": 1,
+          "end": 4,
+          "id": "scene_04_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "الْعِلْمَ اسْمُ إِنَّ مَنْصُوبٌ، وَنَافِعٌ خَبَرُهَا مَرْفُوعٌ.",
+          "text_plain": "العلم اسم إن منصوب، ونافع خبرها مرفوع.",
+          "start": 9.8,
+          "end": 13.8,
+          "emotion": "تشجيع",
+          "id": "scene_04_02"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "quiz",
+          "start": 0.5,
+          "end": 14,
+          "layout": "rows",
+          "options": [
+            {
+              "text_diacritized": "إِنَّ الْعِلْمُ نَافِعٌ",
+              "text_plain": "إن العلم نافع"
+            },
+            {
+              "text_diacritized": "إِنَّ الْعِلْمَ نَافِعٌ",
+              "text_plain": "إن العلم نافع"
+            },
+            {
+              "text_diacritized": "إِنَّ الْعِلْمَ نَافِعًا",
+              "text_plain": "إن العلم نافعا"
+            }
+          ],
+          "answer_index": 1,
+          "countdown_from": 6,
+          "reveal": 9.5,
+          "prompt_diacritized": "اخْتَرِ الْجُمْلَةَ الصَّحِيحَةَ",
+          "prompt_plain": "اختر الجملة الصحيحة"
+        }
+      ],
+      "transition": "fade",
+      "hash": "06fe4de3012f"
+    }
+  ]
+}

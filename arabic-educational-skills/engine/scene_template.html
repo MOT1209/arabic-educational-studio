@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<title>scene</title>
+<style>
+@font-face{font-family:"ArabicMain";font-weight:400;src:url("../../assets/fonts/noto-sans-arabic-arabic-400-normal.woff2") format("woff2");}
+@font-face{font-family:"ArabicMain";font-weight:700;src:url("../../assets/fonts/noto-sans-arabic-arabic-700-normal.woff2") format("woff2");}
+html,body{margin:0;padding:0;background:#222;}
+#viewport{width:1920px;height:1080px;position:relative;overflow:hidden;font-family:"ArabicMain",sans-serif;
+  font-feature-settings:"liga" 1,"calt" 1,"mark" 1,"mkmk" 1;text-rendering:optimizeLegibility;}
+#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;}
+#stage svg{overflow:visible;}
+.actor{position:absolute;}
+.actor svg{display:block;}
+#bg{position:absolute;left:0;top:0;}
+#fx{position:absolute;left:0;top:0;pointer-events:none;}
+#boardText{position:absolute;left:450px;top:230px;width:1020px;height:260px;display:flex;align-items:center;justify-content:center;
+  direction:rtl;color:#1b1b1b;white-space:nowrap;}
+#sentence{display:inline-flex;direction:rtl;align-items:center;font-size:128px;line-height:1.9;transform-origin:center;}
+.word{display:inline-block;position:relative;padding:0 .17em;}
+.tag{position:absolute;left:50%;top:100%;transform:translateX(-50%);margin-top:-18px;white-space:nowrap;font-size:48px;font-weight:700;
+  color:#fff;background:var(--c,#1f6feb);border-radius:22px;padding:0 26px;line-height:1.7;opacity:0;}
+.tag:before{content:"";position:absolute;left:50%;top:-12px;transform:translateX(-50%);border:12px solid transparent;border-top:0;border-bottom-color:var(--c,#1f6feb);}
+#badge{position:absolute;left:1320px;top:128px;width:130px;height:130px;opacity:0;}
+#quiz{position:absolute;left:450px;top:120px;width:1020px;height:500px;direction:rtl;display:none;}
+#quiz .prompt{font-size:56px;line-height:1.5;text-align:center;color:#1b1b1b;margin-top:6px;}
+#quiz .opts{display:flex;gap:26px;margin-top:30px;}
+#quiz .opts.rows{flex-direction:column;}
+#quiz .opts.row{flex-direction:row;margin-top:16px;}
+#quiz .opt{display:flex;align-items:center;gap:24px;border:6px solid #cfd6e4;border-radius:30px;background:#f6f8fc;padding:0 28px;
+  position:relative;transition:none;}
+#quiz .rows .opt{height:140px;}
+#quiz .prompt + .opts.rows{margin-top:14px;gap:18px;}
+#quiz .prompt + .opts.rows .opt{height:108px;}
+#quiz .prompt + .opts.rows .txt{font-size:60px;}
+#quiz .prompt + .opts.rows .lab{width:64px;height:64px;font-size:44px;}
+#quiz .row .opt{flex:1;height:170px;justify-content:center;flex-direction:column;gap:6px;padding:0 10px;}
+#quiz .lab{flex:none;width:76px;height:76px;border-radius:50%;background:#1f6feb;color:#fff;font-size:52px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;line-height:1;}
+#quiz .row .lab{width:56px;height:56px;font-size:40px;}
+#quiz .txt{font-size:68px;line-height:1.5;color:#1b1b1b;}
+#quiz .row .txt{font-size:60px;}
+#quiz .ck{position:absolute;left:26px;top:50%;margin-top:-34px;width:68px;height:68px;opacity:0;}
+#quiz .row .ck{left:12px;top:12px;margin-top:0;width:50px;height:50px;}
+#quiz .opt.correct{border-color:#2ea44f;background:#e6f6ea;}
+#quiz .opt.dim{opacity:.35;}
+#quiz .cd{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);width:104px;height:104px;border-radius:50%;background:#ff9f1c;
+  color:#fff;font-size:70px;font-weight:700;display:none;align-items:center;justify-content:center;line-height:1;}
+#caption{position:absolute;left:110px;width:1700px;bottom:10px;direction:rtl;text-align:center;background:rgba(18,24,44,.82);
+  border-radius:28px;padding:2px 36px 4px;opacity:0;}
+#capName{font-size:30px;color:#9fb3d9;line-height:1.35;}
+#capText{font-size:66px;line-height:1.5;color:#fff;font-weight:400;}
+
+#kids{position:absolute;left:450px;top:120px;width:1020px;height:500px;direction:rtl;pointer-events:none;overflow:visible;}
+#kids .k{position:absolute;left:0;top:0;width:1020px;height:500px;display:flex;align-items:center;justify-content:center;direction:rtl;opacity:0;}
+#kids .k.card .big{font-size:340px;line-height:1.25;color:#1b1b1b;font-weight:700;}
+#kids .k.card .nm{position:absolute;top:18px;left:0;width:100%;text-align:center;font-size:54px;color:#1f6feb;font-weight:700;}
+#kids .k.card.forms .big{font-size:150px;position:absolute;top:70px;left:0;width:100%;text-align:center;line-height:1.3;}
+#kids .forms{position:absolute;left:0;bottom:24px;width:100%;display:flex;gap:18px;justify-content:center;direction:rtl;}
+#kids .forms .fm{width:210px;height:190px;border:5px solid #cfd6e4;border-radius:24px;background:#f6f8fc;text-align:center;}
+#kids .forms .fm b{display:block;font-size:100px;line-height:1.35;color:#1b1b1b;font-weight:700;}
+#kids .forms .fm i{display:block;font-style:normal;font-size:30px;color:#5b6b8c;line-height:1.1;}
+#kids .k.txt{flex-wrap:wrap;align-content:center;box-sizing:border-box;padding:0 30px;}
+#kids .k.txt .w{display:inline-block;padding:0 .14em;font-size:var(--fs,150px);line-height:1.7;color:#1b1b1b;font-weight:700;white-space:nowrap;}
+#kids .k.txt.xl .w{font-size:var(--fs,240px);}
+#kids .k.txt.side{justify-content:flex-start;padding-right:30px;box-sizing:border-box;width:700px;left:320px;}
+#kids .k.txt.small{top:360px;height:120px;}
+#kids .k.txt.small .w{font-size:var(--fs,72px);line-height:1.5;font-weight:400;}
+#kids .k.txt.contrast .w{font-size:var(--fs,96px);}
+#kids .hl{color:#e8590c;}
+#kids .k.img{width:300px;left:40px;top:90px;height:320px;}
+#kids .k.img .ph{width:280px;height:280px;border:6px dashed #9fb3d9;border-radius:30px;background:#eef3fb;display:flex;align-items:center;justify-content:center;
+  text-align:center;font-size:36px;color:#5b6b8c;direction:ltr;padding:12px;box-sizing:border-box;}
+#kids .k.img img{width:290px;height:290px;object-fit:contain;border-radius:24px;background:#fff;}
+#kids .k.cue{top:410px;height:84px;}
+#kids .k.cue .pill{background:#ff9f1c;color:#fff;font-size:54px;font-weight:700;border-radius:42px;padding:0 44px;line-height:1.6;display:flex;gap:18px;align-items:center;}
+#fade{position:absolute;left:0;top:0;width:1920px;height:1080px;background:#000;opacity:0;pointer-events:none;}
+</style>
+</head>
+<body>
+<div id="viewport">
+ <div id="stage">
+  <svg id="bg" width="1920" height="1080" viewBox="0 0 1920 1080">
+   <defs><linearGradient id="wallG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbefd3"/><stop offset="1" stop-color="#f0d9ac"/></linearGradient><linearGradient id="beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><radialGradient id="vig" cx=".5" cy=".5" r=".75"><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#3a2410" stop-opacity=".28"/></radialGradient></defs><rect x="0" y="0" width="1920" height="800" fill="url(#wallG)"/>
+   <rect x="0" y="640" width="1920" height="160" fill="#efd9a8"/>
+   <rect x="0" y="796" width="1920" height="12" fill="#a8764a"/>
+   <rect x="0" y="808" width="1920" height="272" fill="#c58f5d"/>
+   <g stroke="#b07c4c" stroke-width="3">
+    <line x1="0" y1="880" x2="1920" y2="880"/><line x1="0" y1="960" x2="1920" y2="960"/><line x1="0" y1="1040" x2="1920" y2="1040"/>
+    <line x1="300" y1="808" x2="300" y2="880"/><line x1="900" y1="808" x2="900" y2="880"/><line x1="1500" y1="808" x2="1500" y2="880"/>
+    <line x1="600" y1="880" x2="600" y2="960"/><line x1="1200" y1="880" x2="1200" y2="960"/><line x1="1800" y1="880" x2="1800" y2="960"/>
+   </g>
+   <rect x="1585" y="110" width="250" height="250" rx="14" fill="#8b5a2b"/>
+   <rect x="1600" y="125" width="220" height="220" rx="8" fill="#bfe6ff"/>
+   <circle cx="1740" cy="190" r="34" fill="#ffd54a"/>
+   <rect x="1706" y="125" width="8" height="220" fill="#8b5a2b"/><rect x="1600" y="230" width="220" height="8" fill="#8b5a2b"/>
+   <circle cx="250" cy="190" r="56" fill="#fff" stroke="#8b5a2b" stroke-width="10"/>
+   <line x1="250" y1="190" x2="250" y2="150" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+   <line x1="250" y1="190" x2="278" y2="205" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+   <circle cx="250" cy="190" r="6" fill="#333"/>
+   <rect x="430" y="100" width="1060" height="540" rx="20" fill="#8b5a2b"/>
+   <rect x="450" y="120" width="1020" height="500" rx="10" fill="#ffffff"/>
+   <polygon points="1600,345 1820,345 1700,808 1250,808" fill="url(#beam)"/><rect x="520" y="640" width="880" height="16" rx="8" fill="#6f4520"/>
+   <rect x="640" y="626" width="110" height="14" rx="5" fill="#e74c3c"/><rect x="780" y="626" width="90" height="14" rx="5" fill="#1f6feb"/>
+  </svg>
+  <div id="boardText" dir="rtl" lang="ar"><div id="sentence"></div></div>
+  <div id="kids" dir="rtl" lang="ar"></div>
+  <div id="quiz" dir="rtl" lang="ar"></div>
+  <div id="badge"><svg viewBox="0 0 100 100" width="130" height="130"><circle id="badgeBg" cx="50" cy="50" r="46" fill="#d64541"/><path id="badgePath" d="" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
+  <div id="actors"></div>
+  <svg id="fx" width="1920" height="1080" viewBox="0 0 1920 1080"></svg>
+ </div>
+ <div id="caption" dir="rtl" lang="ar"><div id="capName"></div><div id="capText"></div></div>
+ <div id="fade"></div>
+</div>
+<script>
+const D = /*__DATA__*/;
+const $ = id => document.getElementById(id);
+const clamp = (x,a=0,b=1) => Math.min(b,Math.max(a,x));
+const lerp = (a,b,x) => a+(b-a)*x;
+const easeOut = x => 1-Math.pow(1-x,3);
+const rnd = s => { const x = Math.sin(s*127.1+311.7)*43758.5453; return x-Math.floor(x); };
+const SPARK = "M0,-1 Q.2,-.2 1,0 Q.2,.2 0,1 Q-.2,.2 -1,0 Q-.2,-.2 0,-1Z";
+const BLUE = "#1f6feb", GREEN = "#1a9850", INK = "#1b1b1b", RED = "#b03a2e";
+const roleColor = r => r.indexOf("خبر")>=0 ? GREEN : BLUE;
+
+// ---------------- الشخصيات (v2: تعبيرات وتظليل) ----------------
+const EYE = (cx,cy,rx,ry,iris,ir=9) => `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="#fff"/><g class="pupil"><circle cx="${cx}" cy="${cy+1}" r="${ir}" fill="${iris}"/><circle cx="${cx}" cy="${cy+1}" r="${ir*0.55}" fill="#111"/><circle cx="${cx+ir*0.35}" cy="${cy-ir*0.3}" r="${ir*0.3}" fill="#fff"/></g>`;
+const MOUTH = (cx,cy,w) => `<path class="mouth" data-cx="${cx}" data-cy="${cy}" data-w="${w}" fill="#7a2f2f" stroke="#5a1f1f" stroke-width="2" stroke-linejoin="round" d=""/>`;
+const SVG = {
+ teacher: `<svg width="300" height="560" viewBox="0 0 300 560">
+  <defs><linearGradient id="gT" x1="0" x2="1"><stop offset="0" stop-color="#3f86d8"/><stop offset="1" stop-color="#2a5d9c"/></linearGradient>
+  <radialGradient id="gTs" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#f7d5ae"/><stop offset="1" stop-color="#e8b88a"/></radialGradient></defs>
+  <ellipse cx="150" cy="548" rx="100" ry="14" fill="rgba(0,0,0,.16)"/>
+  <rect x="105" y="380" width="38" height="150" rx="12" fill="#34495e"/><rect x="157" y="380" width="38" height="150" rx="12" fill="#2c3e50"/>
+  <ellipse cx="122" cy="538" rx="32" ry="14" fill="#222"/><ellipse cx="178" cy="538" rx="32" ry="14" fill="#222"/>
+  <g class="body">
+   <g class="armL" data-px="58" data-py="215"><rect x="40" y="205" width="36" height="150" rx="18" fill="url(#gT)"/><circle cx="58" cy="362" r="20" fill="#f2c9a0"/></g>
+   <rect x="70" y="190" width="160" height="210" rx="42" fill="url(#gT)"/>
+   <path d="M70,300 Q150,330 230,300 L230,358 Q230,400 188,400 L112,400 Q70,400 70,358Z" fill="rgba(0,0,0,.07)"/>
+   <polygon points="150,200 136,240 150,335 164,240" fill="#e74c3c"/>
+   <rect x="132" y="190" width="36" height="22" rx="6" fill="#fff"/>
+   <g class="armR" data-px="242" data-py="215"><rect x="224" y="205" width="36" height="150" rx="18" fill="url(#gT)"/><circle cx="242" cy="362" r="20" fill="#f2c9a0"/></g>
+   <g class="head" data-hx="150" data-hy="188">
+    <circle cx="82" cy="120" r="12" fill="#eebd91"/><circle cx="218" cy="120" r="12" fill="#eebd91"/>
+    <circle cx="150" cy="115" r="70" fill="url(#gTs)"/>
+    <path d="M80,108 Q82,38 150,36 Q218,38 220,108 Q200,66 150,66 Q100,66 80,108Z" fill="#3b2a20"/>
+    <path d="M104,52 Q150,30 196,52" stroke="#5c4433" stroke-width="5" fill="none" stroke-linecap="round" opacity=".7"/>
+    <g class="eyes" style="transform-box:fill-box;transform-origin:center">${EYE(122,118,15,17,'#5b3a24',8)}${EYE(178,118,15,17,'#5b3a24',8)}</g>
+    <circle cx="122" cy="118" r="23" fill="rgba(255,255,255,.18)" stroke="#222" stroke-width="5"/><circle cx="178" cy="118" r="23" fill="rgba(255,255,255,.18)" stroke="#222" stroke-width="5"/>
+    <line x1="145" y1="118" x2="155" y2="118" stroke="#222" stroke-width="5"/>
+    <g class="browL" data-bx="121" data-by="88"><path d="M102,90 Q122,80 142,90" stroke="#3b2a20" stroke-width="7" fill="none" stroke-linecap="round"/></g>
+    <g class="browR" data-bx="179" data-by="88"><path d="M158,90 Q178,80 198,90" stroke="#3b2a20" stroke-width="7" fill="none" stroke-linecap="round"/></g>
+    <path d="M150,128 Q144,140 152,142" stroke="#c9976a" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <circle cx="100" cy="146" r="9" fill="#ff9a8a" opacity=".35"/><circle cx="200" cy="146" r="9" fill="#ff9a8a" opacity=".35"/>
+    ${MOUTH(150,160,20)}
+   </g>
+  </g></svg>`,
+ inna: `<svg width="260" height="520" viewBox="0 -40 260 520">
+  <defs><linearGradient id="gI" x1="0" x2="1"><stop offset="0" stop-color="#a45bc6"/><stop offset="1" stop-color="#7a3a98"/></linearGradient>
+  <radialGradient id="gIs" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#fde3cc"/><stop offset="1" stop-color="#f3c9a8"/></radialGradient>
+  <linearGradient id="gIh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8e4fb0"/><stop offset="1" stop-color="#6a3187"/></linearGradient></defs>
+  <ellipse cx="130" cy="468" rx="80" ry="12" fill="rgba(0,0,0,.16)"/>
+  <rect x="95" y="388" width="26" height="66" rx="10" fill="#f8d5b9"/><rect x="139" y="388" width="26" height="66" rx="10" fill="#f8d5b9"/>
+  <ellipse cx="108" cy="458" rx="26" ry="12" fill="#5b2c6f"/><ellipse cx="152" cy="458" rx="26" ry="12" fill="#5b2c6f"/>
+  <g class="body">
+   <path d="M130,185 C160,185 190,200 200,250 L225,402 Q130,432 35,402 L60,250 C70,200 100,185 130,185Z" fill="url(#gI)"/>
+   <path d="M130,300 L120,420 M130,300 L160,418 M130,300 L88,412" stroke="rgba(255,255,255,.12)" stroke-width="4" fill="none"/>
+   <rect x="82" y="262" width="96" height="12" rx="6" fill="#f1c40f"/>
+   <g class="armL" data-px="83" data-py="208"><rect x="69" y="200" width="28" height="120" rx="14" fill="#7d3c98"/><circle cx="83" cy="326" r="15" fill="#f8d5b9"/></g>
+   <g class="armR" data-px="177" data-py="208">
+    <rect x="163" y="200" width="28" height="118" rx="14" fill="#7d3c98"/><circle cx="177" cy="324" r="15" fill="#f8d5b9"/>
+    <line x1="186" y1="318" x2="224" y2="222" stroke="#8b5a2b" stroke-width="7" stroke-linecap="round"/>
+    <circle class="glow" cx="226" cy="214" r="30" fill="#ffe27a" opacity=".55"/>
+    <polygon points="226,190 233,208 252,210 237,222 243,241 226,230 209,241 215,222 200,210 219,208" fill="#ffd54a" stroke="#f5a623" stroke-width="3"/>
+   </g>
+   <g class="head" data-hx="130" data-hy="215">
+    <path d="M70,120 Q60,190 78,205 L182,205 Q200,190 190,120Z" fill="#6e4a30"/>
+    <circle cx="130" cy="160" r="62" fill="url(#gIs)"/>
+    <path d="M70,150 Q72,108 130,104 Q188,108 190,150 Q168,124 130,124 Q92,124 70,150Z" fill="#6e4a30"/>
+    <polygon points="58,112 130,-30 202,112" fill="url(#gIh)"/>
+    <path d="M100,60 L128,-8" stroke="rgba(255,255,255,.22)" stroke-width="6" stroke-linecap="round"/>
+    <ellipse cx="130" cy="112" rx="92" ry="20" fill="#5b2c6f"/>
+    <polygon points="130,32 135,46 150,48 138,57 143,72 130,63 117,72 122,57 110,48 125,46" fill="#ffd54a"/>
+    <g class="eyes" style="transform-box:fill-box;transform-origin:center">${EYE(105,158,14,16,'#7b4bb5',9)}${EYE(155,158,14,16,'#7b4bb5',9)}</g>
+    <g class="browL" data-bx="105" data-by="139"><path d="M90,141 Q105,133 120,141" stroke="#4a2f1e" stroke-width="5" fill="none" stroke-linecap="round"/></g>
+    <g class="browR" data-bx="155" data-by="139"><path d="M140,141 Q155,133 170,141" stroke="#4a2f1e" stroke-width="5" fill="none" stroke-linecap="round"/></g>
+    <circle cx="88" cy="182" r="10" fill="#ff9aa8" opacity=".6"/><circle cx="172" cy="182" r="10" fill="#ff9aa8" opacity=".6"/>
+    ${MOUTH(130,188,13)}
+   </g>
+  </g></svg>`,
+ student: `<svg width="260" height="520" viewBox="0 -40 260 520">
+  <defs><linearGradient id="gS" x1="0" x2="1"><stop offset="0" stop-color="#f08ac0"/><stop offset="1" stop-color="#d9609f"/></linearGradient>
+  <linearGradient id="gS2" x1="0" x2="1"><stop offset="0" stop-color="#5677c7"/><stop offset="1" stop-color="#3d5aa6"/></linearGradient>
+  <radialGradient id="gSs" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#f1c9a2"/><stop offset="1" stop-color="#dfae83"/></radialGradient></defs>
+  <ellipse cx="130" cy="468" rx="80" ry="12" fill="rgba(0,0,0,.16)"/>
+  <rect x="97" y="392" width="24" height="62" rx="10" fill="#e8b98f"/><rect x="139" y="392" width="24" height="62" rx="10" fill="#e8b98f"/>
+  <ellipse cx="108" cy="458" rx="26" ry="12" fill="#2c3e50"/><ellipse cx="152" cy="458" rx="26" ry="12" fill="#2c3e50"/>
+  <g class="body">
+   <path d="M62,248 L198,248 L220,400 Q130,420 40,400 Z" fill="url(#gS2)"/>
+   <path d="M90,262 L84,404 M130,262 L130,412 M170,262 L176,404" stroke="rgba(255,255,255,.12)" stroke-width="4"/>
+   <rect x="72" y="178" width="116" height="84" rx="30" fill="url(#gS)"/>
+   <g class="armL" data-px="80" data-py="196"><rect x="58" y="190" width="28" height="116" rx="14" fill="url(#gS)"/><circle cx="72" cy="312" r="15" fill="#e8b98f"/></g>
+   <g class="armR" data-px="180" data-py="196"><rect x="174" y="190" width="28" height="116" rx="14" fill="url(#gS)"/><circle cx="188" cy="312" r="15" fill="#e8b98f"/></g>
+   <g class="head" data-hx="130" data-hy="200">
+    <circle cx="214" cy="146" r="28" fill="#1f1a17"/>
+    <path d="M66,150 Q62,98 130,96 Q198,98 194,150 Q190,176 184,190 L76,190 Q70,176 66,150Z" fill="#1f1a17"/>
+    <circle cx="130" cy="156" r="60" fill="url(#gSs)"/>
+    <path d="M72,140 Q80,100 130,98 Q180,100 188,140 Q168,118 130,118 Q92,118 72,140Z" fill="#1f1a17"/>
+    <path d="M96,106 Q130,92 164,106" stroke="rgba(255,255,255,.22)" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M186,106 l22,-12 l2,26 z M186,106 l-6,-24 l28,12 z" fill="#e74c3c"/>
+    <g class="eyes" style="transform-box:fill-box;transform-origin:center">${EYE(106,156,14,16,'#5a3b2a',9)}${EYE(154,156,14,16,'#5a3b2a',9)}</g>
+    <g class="browL" data-bx="106" data-by="136"><path d="M91,138 Q106,130 121,138" stroke="#1f1a17" stroke-width="5" fill="none" stroke-linecap="round"/></g>
+    <g class="browR" data-bx="154" data-by="136"><path d="M139,138 Q154,130 169,138" stroke="#1f1a17" stroke-width="5" fill="none" stroke-linecap="round"/></g>
+    <circle cx="90" cy="178" r="10" fill="#ff8fa3" opacity=".55"/><circle cx="170" cy="178" r="10" fill="#ff8fa3" opacity=".55"/>
+    ${MOUTH(130,182,12)}
+   </g>
+  </g></svg>`
+};
+// تعبيرات الوجه: r رفع الحاجبين، t ميل (موجب = قلق/استغراب)، s ابتسامة (-1..1)، o فتح الفم الإضافي
+const EMO = {
+  "مرح":{r:5,t:0,s:.85,o:.05}, "حماس":{r:9,t:0,s:1,o:.2}, "فرح":{r:7,t:0,s:1,o:.1},
+  "تشويق":{r:11,t:2,s:.6,o:.25}, "استغراب":{r:13,t:6,s:-.15,o:.45}, "متردد":{r:3,t:9,s:-.25,o:0},
+  "تشجيع":{r:6,t:0,s:.95,o:.05}
+};
+const NEUTRAL = {r:0,t:0,s:.3,o:0};
+const mixE = (a,b,w) => ({r:lerp(a.r,b.r,w), t:lerp(a.t,b.t,w), s:lerp(a.s,b.s,w), o:lerp(a.o,b.o,w)});
+function exprAt(a,t){
+  const ln = D.dialogue.find(d => t>=d.start-0.1 && t<d.end+0.4 && d.emotion && EMO[d.emotion]);
+  if (!ln) return NEUTRAL;
+  const w = Math.min(clamp((t-ln.start+0.1)/0.25), 1-clamp((t-ln.end)/0.4)) * (ln.character===a.id ? 1 : 0.4);
+  return mixE(NEUTRAL, EMO[ln.emotion], w);
+}
+function mouthD(cx,cy,w,s,open){
+  const y0 = cy - s*7, up = -2 + (s<0 ? -s*2 : 0), lo = 3 + open*20 + Math.max(s,0)*7;
+  return `M${cx-w},${y0} Q${cx},${cy+up} ${cx+w},${y0} Q${cx},${cy+lo} ${cx-w},${y0}Z`;
+}
+const actors = D.actors.map(a => {
+  const el = document.createElement("div"); el.className = "actor"; el.innerHTML = SVG[a.id];
+  el.style.left = "2100px"; el.style.top = a.top+"px";
+  $("actors").appendChild(el);
+  const q = s => el.querySelector(s);
+  return Object.assign({}, a, {el, mouth:q(".mouth"), eyes:q(".eyes"), pupils:el.querySelectorAll(".pupil"), head:q(".head"), browL:q(".browL"), browR:q(".browR"), armR:q(".armR"), armL:q(".armL"), body:q(".body"), glow:q(".glow"), cx:a.x, cy:a.top});
+});
+const AI = actors.find(a => a.id === "inna");
+
+// ---------------- شرارات ----------------
+const sparks = [];
+if (AI){
+  if (AI.enter > 0) for (let i=0;i<9;i++) sparks.push({t0:AI.enter+0.15+i*0.17, dur:0.8, kind:"trail", s:i, size:16+rnd(i+3)*12});
+  D.board.forEach((b, idx) => { if (idx > 0) for (let i=0;i<14;i++) sparks.push({t0:b.start-0.5+i*0.05, dur:0.9, kind:"toWord", s:i+idx*20, size:20+rnd(i+idx)*16}); });
+  for (let i=0;i<Math.floor(D.duration/0.92);i++) sparks.push({t0:1.5+i*0.92, dur:0.8, kind:"amb", s:i, size:12+rnd(i+9)*10});
+}
+const fx = $("fx");
+sparks.forEach(sp => { const p = document.createElementNS("http://www.w3.org/2000/svg","path");
+  p.setAttribute("d",SPARK); p.setAttribute("fill","#ffd54a"); p.setAttribute("opacity","0"); fx.appendChild(p); sp.el = p; });
+const castTimes = D.board.map(b => b.start).slice(1);
+
+// ---------------- أدوات ----------------
+const speakingId = t => { const d = D.dialogue.find(d => t>=d.start && t<d.end); return d ? d.character : null; };
+const lineAt = t => D.dialogue.find(d => t>=d.start && t<d.end) || null;
+let curBoard = null, curQuiz = null;
+
+function buildBoard(b){
+  const s = $("sentence"); s.innerHTML = "";
+  b.text.split(" ").forEach(w => {
+    const sp = document.createElement("span"); sp.className = "word"; sp.dataset.t = w;
+    sp.appendChild(document.createTextNode(w));
+    const tg = document.createElement("span"); tg.className = "tag"; sp.appendChild(tg);
+    s.appendChild(sp);
+  });
+  s.style.fontSize = "128px";
+  const w = s.getBoundingClientRect().width;
+  if (w > 980) s.style.fontSize = (128*980/w)+"px";
+}
+const LETTERS = ["أ","ب","ج"], DIGITS = ["٠","١","٢","٣"];
+const CHECK = '<svg class="ck" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#2ea44f"/><path d="M28,52 L44,68 L74,34" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+function buildQuiz(q){
+  const el = $("quiz"); el.innerHTML = "";
+  if (q.prompt){ const p = document.createElement("div"); p.className = "prompt"; p.textContent = q.prompt; el.appendChild(p); }
+  const wrap = document.createElement("div"); wrap.className = "opts "+q.layout;
+  const LAB = q.labels === "digits" ? DIGITS.slice(1) : LETTERS;   // أرقام حين تكون الخيارات حروفاً (كي لا يلتبس الترقيم بالجواب)
+  q.options.forEach((o,i) => {
+    const c = document.createElement("div"); c.className = "opt";
+    c.innerHTML = '<span class="lab">'+LAB[i]+'</span><span class="txt"></span>'+CHECK;
+    c.querySelector(".txt").textContent = o; wrap.appendChild(c);
+  });
+  el.appendChild(wrap);
+  const cd = document.createElement("div"); cd.className = "cd"; el.appendChild(cd);
+}
+
+
+// ---- طبقة تعليم الحروف (letter_card / letter_highlight / cue / image / نص كبير) ----
+const FORM_LABEL = {isolated:"مُنْفَصِل", initial:"أَوَّل", medial:"وَسَط", final:"آخِر"};
+const CLUSTER_RE = /\p{L}\p{M}*/gu;
+function clusterize(word){ return word.match(CLUSTER_RE) || []; }          // نفس تقسيم studio.letters.clusters للحروف
+function wordEl(word, hlIdx){
+  const w = document.createElement("span"); w.className = "w";
+  const set = new Set(hlIdx || []);
+  if (!set.size){ w.textContent = word; return w; }
+  const parts = word.match(/\p{L}\p{M}*|[^\p{L}\p{M}]+/gu) || [];     // نحافظ على غير الحروف كما هي
+  let li = 0;
+  parts.forEach(pt => { const sp = document.createElement("span");
+    if (/^\p{L}/u.test(pt)){ if (set.has(li)) sp.className = "hl"; li++; }
+    sp.textContent = pt; w.appendChild(sp); });
+  return w;
+}
+function buildKid(k){
+  const el = document.createElement("div"); el.className = "k "+k.kind+(k.cls?" "+k.cls:""); el.dataset.start = k.start; el.dataset.end = k.end;
+  if (k.kind === "card"){
+    el.innerHTML = '<div class="nm"></div><div class="big"></div>';
+    el.querySelector(".nm").textContent = k.name || ""; el.querySelector(".big").textContent = k.letter;
+    if (k.showForms){ el.classList.add("forms"); const f = document.createElement("div"); f.className = "forms";
+      ["isolated","initial","medial","final"].forEach(key => { if (!k.forms[key]) return;
+        const d = document.createElement("div"); d.className = "fm"; d.innerHTML = "<b></b><i></i>";
+        d.querySelector("b").textContent = k.forms[key]; d.querySelector("i").textContent = FORM_LABEL[key]; f.appendChild(d); });
+      el.appendChild(f); el.querySelector(".nm").style.display = "none"; }
+  } else if (k.kind === "txt"){
+    const words = k.text.split(" ");
+    const toks = (k.tokens || []);
+    words.forEach((w, wi) => { const h = toks.find(x => x.token === wi); el.appendChild(wordEl(w, k.hl && !toks.length ? k.hl : (h ? h.cluster_indices : []))); });
+  } else if (k.kind === "img"){
+    if (k.src){ const im = document.createElement("img"); im.src = k.src; el.appendChild(im); }
+    else { const ph = document.createElement("div"); ph.className = "ph"; ph.textContent = "[ image: " + k.concept + " ]"; el.appendChild(ph); }
+  } else if (k.kind === "cue"){
+    el.innerHTML = '<div class="pill"><span>🗣️</span><span></span></div>'; el.querySelector(".pill span:last-child").textContent = k.text;
+  }
+  return el;
+}
+function fitKid(e){            // يصغّر الخط إن زادت كلمة عن العرض أو زاد المحتوى عن ارتفاع السبورة (الجملة تلتف على أسطر)
+  const avail = e.classList.contains("side") ? 640 : 960, top0 = $("kids").getBoundingClientRect().top;
+  for (let guard = 0; guard < 14; guard++){
+    const ws = [...e.querySelectorAll(".w")]; if (!ws.length) return;
+    const rs = ws.map(w => w.getBoundingClientRect());
+    const tooWide = rs.some(r => r.width > avail);
+    const tooTall = Math.max(...rs.map(r => r.bottom)) - Math.min(...rs.map(r => r.top)) > 470;
+    if (!tooWide && !tooTall) return;
+    const cur = parseFloat(getComputedStyle(ws[0]).fontSize);
+    e.style.setProperty("--fs", (cur*0.9)+"px");
+  }
+}
+let curKidsKey = "";
+function updateKids(t){
+  const act = D.kids.filter(k => t>=k.start && t<k.end);
+  const key = act.map(k => k.id).join(",");
+  if (key !== curKidsKey){ curKidsKey = key; const root = $("kids"); root.innerHTML = ""; act.forEach(k => { const e = buildKid(k); e.dataset.id = k.id; root.appendChild(e); if (k.kind === "txt") fitKid(e); }); }
+  $("kids").querySelectorAll(".k").forEach(e => { const k = act.find(x => String(x.id) === e.dataset.id); if (!k) return;
+    const p = clamp((t-k.start)/0.3); e.style.opacity = Math.min(p, clamp((k.end-t)/0.2) );
+    e.style.transform = "scale("+(0.94+0.06*easeOut(p))+")";
+    if (k.kind === "cue") e.querySelector(".pill").style.transform = "scale("+(1+0.05*Math.sin(t*6))+")";
+    const hl = e.querySelectorAll(".hl"); hl.forEach(h => h.style.opacity = clamp((t-k.start-0.4)/0.3) * 0.65 + 0.35);
+  });
+  return act;
+}
+window.auditAt = function(t){      // تدقيق بصري: عناصر طبقة الأطفال خارج حدود السبورة
+  renderAt(t); const B = {l:450, t:120, r:1470, b:620}, bad = [];
+  $("kids").querySelectorAll(".k").forEach(e => { const r = e.getBoundingClientRect();
+    const inner = e.firstElementChild ? e.firstElementChild.getBoundingClientRect() : r;
+    [r, inner].forEach(q => { if (q.width>0 && (q.left < B.l-2 || q.right > B.r+2 || q.top < B.t-2 || q.bottom > B.b+2)) bad.push({cls:e.className, rect:[q.left,q.top,q.right,q.bottom].map(Math.round)}); }); });
+  return bad;
+};
+
+function renderAt(t){
+  const sp = speakingId(t);
+  const boardNow = D.board.filter(b => t>=b.start && t<b.end).pop() || null;
+  const quizNow = D.quizzes.find(q => t>=q.start && t<q.end) || null;
+  const kidsNow = updateKids(t);
+  const casting = castTimes.some(c => t>=c-0.8 && t<c+0.9);
+
+  // ---- الشخصيات ----
+  actors.forEach(a => {
+    let x = a.x, y = a.top;
+    if (a.enter > 0){
+      if (t < a.enter) x = 2100;
+      else { const p = clamp((t-a.enter)/1.6); x = lerp(2100, a.x, easeOut(p));
+             y = a.top - 80*Math.abs(Math.sin(p*Math.PI*3))*(1-p) + (p>=1 ? 4*Math.sin(t*2.4) : 0); }
+    } else y = a.top + 3*Math.sin(t*2.2 + a.top);
+    a.cx = x; a.cy = y; a.el.style.left = x+"px"; a.el.style.top = y+"px";
+    const talk = sp === a.id;
+    const ex = exprAt(a,t);
+    const mo = a.mouth;
+    const syl = Math.abs(Math.sin(t*(11+a.top%5)))*(0.55+0.45*Math.abs(Math.sin(t*4.3+a.top)));
+    const open = talk ? Math.min(1, 0.12+0.85*syl+ex.o*0.5) : ex.o*0.5;
+    mo.setAttribute("d", mouthD(+mo.dataset.cx, +mo.dataset.cy, +mo.dataset.w, ex.s, open));
+    const bl = ((t+a.top*0.01)%3.6) < 0.14 ? 0.08 : 1; a.eyes.style.transform = "scaleY("+bl+")";
+    [[a.browL,-1],[a.browR,1]].forEach(([b,sg]) => { const bx=+b.dataset.bx, by=+b.dataset.by;
+      b.setAttribute("transform","translate(0 "+(-ex.r + (talk? -1.5*syl:0))+") rotate("+(sg*ex.t)+" "+bx+" "+by+")"); });
+    const sw = talk ? 2.4*Math.sin(t*3.1)+1.2*Math.sin(t*7.3) : 1.3*Math.sin(t*0.9+a.top);
+    const bob = talk ? -2*syl : 0;
+    const hx=+a.head.dataset.hx, hy=+a.head.dataset.hy;
+    a.head.setAttribute("transform","rotate("+(sw+(ex.t>5?3:0))+" "+hx+" "+hy+") translate(0 "+bob+")");
+    const spk = D.dialogue.find(d => t>=d.start && t<d.end);
+    let lx = 0; if (!talk && spk){ const other = actors.find(o => o.id===spk.character); if (other) lx = Math.max(-1,Math.min(1,(other.cx-a.cx)/500)); }
+    else if (!talk) lx = (960-(a.cx+130))/900;
+    a.pupils.forEach(p => p.setAttribute("transform","translate("+(lx*3.2)+" "+(talk?0:0.5)+")"));
+    a.body.setAttribute("transform","translate(0 "+(1.6*Math.sin(t*1.9+a.top))+")");
+    let ang;
+    if (a.id === "teacher") ang = (talk && (boardNow || quizNow || kidsNow.length)) ? -98+7*Math.sin(t*3.5) : 4*Math.sin(t*1.1);
+    else if (a.id === "inna") ang = casting ? -22+18*Math.sin(t*9) : (talk ? 10*Math.sin(t*6) : 4*Math.sin(t*2));
+    else ang = talk ? -18+10*Math.sin(t*5) : 3*Math.sin(t*1.5);
+    a.armR.setAttribute("transform", "rotate("+ang+" "+a.armR.dataset.px+" "+a.armR.dataset.py+")");
+    a.armL.setAttribute("transform", "rotate("+(3*Math.sin(t*1.3))+" "+a.armL.dataset.px+" "+a.armL.dataset.py+")");
+    if (a.glow){ a.glow.setAttribute("opacity",(0.45+0.25*Math.sin(t*5)).toFixed(3)); a.glow.setAttribute("r", casting ? 44 : 30); }
+  });
+
+  // ---- السبورة ----
+  if (boardNow !== curBoard){ curBoard = boardNow; if (boardNow) buildBoard(boardNow); else $("sentence").innerHTML = ""; }
+  if (boardNow && !quizNow){
+    const p = clamp((t-boardNow.start)/0.35), e = easeOut(p);
+    const s = $("sentence"); s.style.opacity = p; s.style.transform = "scale("+(0.92+0.08*e)+")";
+    const base = boardNow.status === "wrong" ? RED : INK;
+    s.querySelectorAll(".word").forEach(w => { w.style.color = base; w.lastChild.style.opacity = 0; });
+    D.highlights.forEach(h => {
+      if (t>=h.start && t<h.end){
+        s.querySelectorAll(".word").forEach(w => {
+          if (w.dataset.t === h.text){
+            const c = roleColor(h.role); w.style.color = c;
+            if (h.tag){ w.lastChild.textContent = h.tag; w.lastChild.style.setProperty("--c", c); w.lastChild.style.opacity = clamp((t-h.start)/0.4); }
+          }
+        });
+      }
+    });
+  } else $("sentence").style.opacity = 0;
+
+  // ---- شارة ✓ / ✗ ----
+  const bd = D.badges.find(b => t>=b.start && t<b.end);
+  if (bd){
+    const p = clamp((t-bd.start)/0.35), sc = p<1 ? 0.2+1.0*easeOut(p)+0.12*Math.sin(p*Math.PI) : 1.0;
+    $("badge").style.opacity = clamp((t-bd.start)/0.12); $("badge").style.transform = "scale("+sc+")";
+    $("badgeBg").setAttribute("fill", bd.kind === "wrong" ? "#d64541" : "#2ea44f");
+    $("badgePath").setAttribute("d", bd.kind === "wrong" ? "M30,30 L70,70 M70,30 L30,70" : "M28,52 L44,68 L74,34");
+  } else $("badge").style.opacity = 0;
+
+  // ---- التمرين ----
+  if (quizNow !== curQuiz){ curQuiz = quizNow; if (quizNow) buildQuiz(quizNow); $("quiz").style.display = quizNow ? "block" : "none"; }
+  if (quizNow){
+    const cards = $("quiz").querySelectorAll(".opt"), revealed = t >= quizNow.reveal;
+    cards.forEach((c,i) => { c.classList.toggle("correct", revealed && i === quizNow.answer);
+      c.classList.toggle("dim", revealed && i !== quizNow.answer);
+      c.querySelector(".ck").style.opacity = (revealed && i === quizNow.answer) ? 1 : 0; });
+    const cd = $("quiz").querySelector(".cd");
+    const k = 3 - Math.floor(t - quizNow.countdown_from);
+    if (t >= quizNow.countdown_from && k >= 1 && !revealed){ cd.style.display = "flex"; cd.textContent = DIGITS[k]; } else cd.style.display = "none";
+  }
+
+  // ---- شرارات ----
+  if (AI){
+    const sr = $("sentence").getBoundingClientRect();
+    const sx = sr.left + sr.width/2, sy = sr.top + sr.height/2;
+    const wandX = AI.cx + 226, wandY = AI.cy + 254;
+    sparks.forEach(k => {
+      const p = (t-k.t0)/k.dur;
+      if (p<0 || p>1){ k.el.setAttribute("opacity","0"); return; }
+      let x,y;
+      if (k.kind === "toWord"){ x = lerp(wandX,sx,easeOut(p)); y = lerp(wandY,sy,easeOut(p)) - Math.sin(p*Math.PI)*70*(rnd(k.s)-.5)*2; }
+      else if (k.kind === "trail"){ x = AI.cx+120 - 50*p*(1+rnd(k.s)); y = AI.cy+420 - 120*p - rnd(k.s+1)*80; }
+      else { x = AI.cx+130+(rnd(k.s)-.5)*260; y = AI.cy+120+(rnd(k.s+1)-.5)*320 - 40*p; }
+      k.el.setAttribute("transform","translate("+x+" "+y+") rotate("+(p*160*(rnd(k.s)>.5?1:-1))+") scale("+(Math.sin(p*Math.PI)*k.size)+")");
+      k.el.setAttribute("opacity",(0.95*Math.sin(p*Math.PI)).toFixed(3));
+    });
+  }
+
+  // ---- الترجمة المكتوبة ----
+  const ln = lineAt(t), cap = $("caption");
+  if (ln){ $("capName").textContent = D.names[ln.character]; $("capText").textContent = ln.text;
+    $("capText").style.color = ln.character === "inna" ? "#ffd166" : "#ffffff";
+    cap.style.opacity = Math.min(clamp((t-ln.start)/0.15), clamp((ln.end-t)/0.15)); } else cap.style.opacity = 0;
+
+  // ---- ظهور وتلاشٍ ----
+  let f = 1 - clamp(t/0.3);
+  if (D.fadeOut) f = Math.max(f, clamp((t-(D.duration-0.7))/0.7));
+  $("fade").style.opacity = f;
+}
+window.renderAt = renderAt;
+window.ready = document.fonts.ready.then(() => { renderAt(0); return true; });
+</script>
+</body>
+</html>

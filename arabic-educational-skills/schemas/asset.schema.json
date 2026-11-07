@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Persistent asset record",
+  "type": "object",
+  "required": [
+    "id",
+    "kind",
+    "name",
+    "created",
+    "versions"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_\\-]+$"
+    },
+    "kind": {
+      "enum": [
+        "character",
+        "location",
+        "background",
+        "prop",
+        "image",
+        "video",
+        "audio",
+        "music",
+        "font",
+        "logo",
+        "other"
+      ]
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "created": {
+      "type": "string"
+    },
+    "approved": {
+      "type": "boolean"
+    },
+    "versions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "version",
+          "path",
+          "sha256",
+          "added"
+        ],
+        "properties": {
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "path": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "added": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "license": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "character": {
+      "type": "object",
+      "properties": {
+        "gender": {
+          "enum": [
+            "m",
+            "f",
+            "none"
+          ]
+        },
+        "age_look": {
+          "type": "string"
+        },
+        "outfit": {
+          "type": "string"
+        },
+        "palette": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "proportions": {
+          "type": "string"
+        },
+        "voice": {
+          "type": "string"
+        },
+        "consistency_seed": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

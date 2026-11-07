@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Provider descriptor",
+  "type": "object",
+  "required": [
+    "id",
+    "kind",
+    "status",
+    "capabilities"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_\\-]+$"
+    },
+    "kind": {
+      "enum": [
+        "llm",
+        "image",
+        "video",
+        "audio",
+        "speech",
+        "transcription",
+        "research",
+        "render"
+      ]
+    },
+    "status": {
+      "enum": [
+        "implemented",
+        "not_implemented",
+        "requires_user_credentials"
+      ]
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "cost": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "type": "string"
+        },
+        "usd_per_unit": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
+    "irreversible": {
+      "type": "boolean"
+    },
+    "requires_network": {
+      "type": "boolean"
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

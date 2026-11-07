@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Project brief (interview output)",
+  "type": "object",
+  "required": [
+    "project_type",
+    "topic",
+    "language",
+    "audience",
+    "visual_style",
+    "duration",
+    "workflow",
+    "approved"
+  ],
+  "properties": {
+    "project_type": {
+      "enum": [
+        "kids_education",
+        "educational",
+        "documentary",
+        "storytelling",
+        "scientific",
+        "motion_graphics",
+        "social_media",
+        "other"
+      ]
+    },
+    "topic": {
+      "type": "string",
+      "minLength": 1
+    },
+    "letter": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1,
+      "description": "لدروس الحروف"
+    },
+    "language": {
+      "enum": [
+        "ar",
+        "en",
+        "ar+en"
+      ]
+    },
+    "dialect": {
+      "type": "string"
+    },
+    "audience": {
+      "type": "object",
+      "required": [
+        "age_band"
+      ],
+      "properties": {
+        "age_band": {
+          "enum": [
+            "child",
+            "preteen",
+            "teen",
+            "adult"
+          ]
+        },
+        "level": {
+          "enum": [
+            "beginner",
+            "intermediate",
+            "advanced"
+          ]
+        }
+      }
+    },
+    "learning_goal": {
+      "type": "string"
+    },
+    "visual_style": {
+      "type": "string",
+      "description": "معرّف نمط في Style Manager (أو hybrid:a+b)"
+    },
+    "duration": {
+      "type": "object",
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "fixed",
+            "custom"
+          ]
+        },
+        "seconds": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "tolerance_pct": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 50
+        }
+      }
+    },
+    "format": {
+      "type": "object",
+      "properties": {
+        "platform": {
+          "type": "string"
+        },
+        "aspect": {
+          "enum": [
+            "16:9",
+            "9:16",
+            "1:1",
+            "4:5"
+          ]
+        }
+      }
+    },
+    "quality": {
+      "enum": [
+        "draft",
+        "standard",
+        "high"
+      ]
+    },
+    "narration": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "enum": [
+            "human_recording",
+            "tts_service",
+            "subtitles_only"
+          ]
+        },
+        "character": {
+          "type": "string"
+        }
+      }
+    },
+    "available_assets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "budget_usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "allowed_providers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "no_external_providers": {
+          "type": "boolean"
+        }
+      }
+    },
+    "must_have": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "avoid": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "workflow": {
+      "enum": [
+        "approval",
+        "auto_safe"
+      ]
+    },
+    "approved": {
+      "type": "boolean"
+    }
+  }
+}

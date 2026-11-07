@@ -1,0 +1,252 @@
+{
+ "plan_version": "1.0",
+ "slug": "letter-0628",
+ "title": "حَرْفُ بَاء",
+ "subject": "arabic_letters",
+ "audience": {
+  "age_band": "preschool",
+  "lang": "ar"
+ },
+ "formats": [
+  "16:9",
+  "9:16"
+ ],
+ "style": {
+  "theme": "classroom"
+ },
+ "narrator": {
+  "avatar": "letter_buddy",
+  "avatar_letter": "ب"
+ },
+ "source": {
+  "generator": "kids_learning.alphabet",
+  "profile": "preschool",
+  "review_pending": 5
+ },
+ "blocks": [
+  {
+   "id": "b01",
+   "type": "title",
+   "heading": "حَرْفُ بَاء",
+   "subheading": "ب",
+   "narration": "مَرْحَبًا يَا أَصْدِقَائِي! الْيَوْمَ نَتَعَلَّمُ حَرْفًا جَدِيدًا."
+  },
+  {
+   "id": "b02",
+   "type": "letter",
+   "letter": "ب",
+   "name": "بَاء",
+   "trace": true,
+   "narration": "هَذَا حَرْفُ بَاء."
+  },
+  {
+   "id": "b03",
+   "type": "letter",
+   "letter": "ب",
+   "name": "بَاء",
+   "trace": false,
+   "show_forms": true,
+   "narration": "يُكْتَبُ هَذَا الْحَرْفُ بِأَرْبَعَةِ أَشْكَالٍ، بِحَسَبِ مَوْضِعِهِ فِي الْكَلِمَةِ."
+  },
+  {
+   "id": "b04",
+   "type": "say_with_me",
+   "text": "بَ",
+   "narration": "اسْمُهُ بَاء، وَصَوْتُهُ هَكَذَا: بَ.",
+   "cue": "قُولُوا مَعِي"
+  },
+  {
+   "id": "b05",
+   "type": "explain",
+   "heading": "فِي أَوَّلِ الْكَلِمَةِ",
+   "narration": "الْآنَ نَسْمَعُ كَلِمَاتٍ تَبْدَأُ بِحَرْفِ بَاء."
+  },
+  {
+   "id": "b06",
+   "type": "word",
+   "word": "بَيْت",
+   "highlight_letters": [
+    0
+   ],
+   "narration": "بَيْت. قُولُوا مَعِي: بَيْت.",
+   "hold_seconds": 3.1,
+   "cue": "قُولُوا مَعِي",
+   "concept": "house",
+   "narration_after": "هَذَا الْحَرْفُ يَتَّصِلُ بِمَا بَعْدَهُ."
+  },
+  {
+   "id": "b07",
+   "type": "explain",
+   "heading": "فِي وَسَطِ الْكَلِمَةِ",
+   "narration": "وَالْآنَ كَلِمَاتٌ يَقَعُ فِيهَا حَرْفُ بَاء فِي الْوَسَطِ."
+  },
+  {
+   "id": "b08",
+   "type": "word",
+   "word": "حَبْل",
+   "highlight_letters": [
+    1
+   ],
+   "narration": "حَبْل. قُولُوا مَعِي: حَبْل.",
+   "hold_seconds": 3.1,
+   "cue": "قُولُوا مَعِي",
+   "concept": "rope",
+   "narration_after": "هَذَا الْحَرْفُ يَتَّصِلُ بِمَا قَبْلَهُ وَبِمَا بَعْدَهُ."
+  },
+  {
+   "id": "b09",
+   "type": "explain",
+   "heading": "فِي آخِرِ الْكَلِمَةِ",
+   "narration": "وَهُنَاكَ كَلِمَاتٌ يَقَعُ فِيهَا حَرْفُ بَاء فِي الْآخِرِ."
+  },
+  {
+   "id": "b10",
+   "type": "word",
+   "word": "كَلْب",
+   "highlight_letters": [
+    2
+   ],
+   "narration": "كَلْب. قُولُوا مَعِي: كَلْب.",
+   "hold_seconds": 3.1,
+   "cue": "قُولُوا مَعِي",
+   "concept": "dog",
+   "narration_after": "هَذَا الْحَرْفُ يَتَّصِلُ بِمَا قَبْلَهُ، وَلَا يَتَّصِلُ بِمَا بَعْدَهُ."
+  },
+  {
+   "id": "b11",
+   "type": "explain",
+   "heading": "الْحَرَكَاتُ",
+   "narration": "الْآنَ نَقْرَأُ الْحَرْفَ مَعَ الْحَرَكَاتِ."
+  },
+  {
+   "id": "b12",
+   "type": "say_with_me",
+   "text": "بَ",
+   "narration": "بَ: مَعَ الْفَتْحَةِ.",
+   "cue": "قُولُوا مَعِي"
+  },
+  {
+   "id": "b13",
+   "type": "say_with_me",
+   "text": "بِ",
+   "narration": "بِ: مَعَ الْكَسْرَةِ.",
+   "cue": "قُولُوا مَعِي"
+  },
+  {
+   "id": "b14",
+   "type": "say_with_me",
+   "text": "بُ",
+   "narration": "بُ: مَعَ الضَّمَّةِ.",
+   "cue": "قُولُوا مَعِي"
+  },
+  {
+   "id": "b15",
+   "type": "explain",
+   "heading": "نَقْرَأُ مَعًا",
+   "narration": "الْآنَ نَقْرَأُ كَلِمَاتٍ مَعًا."
+  },
+  {
+   "id": "b16",
+   "type": "word",
+   "word": "بَيْت",
+   "highlight_letters": [
+    0
+   ],
+   "syllables": [
+    "بَيْت"
+   ],
+   "narration": "نَقْرَأُ بِبُطْءٍ.",
+   "delivery": "slow",
+   "narration_after": "ثُمَّ نَقْرَأُ قِرَاءَةً عَادِيَّةً.",
+   "hold_seconds": 3.1,
+   "cue": "قُولُوا مَعِي"
+  },
+  {
+   "id": "b17",
+   "type": "explain",
+   "heading": "جُمْلَةٌ",
+   "narration": "وَالْآنَ جُمْلَةٌ كَامِلَةٌ."
+  },
+  {
+   "id": "b18",
+   "type": "example",
+   "text": "حَمَلَ أَحْمَدُ الْحَبْلَ.",
+   "highlight": [
+    "الْحَبْلَ"
+   ],
+   "narration": "حَمَلَ أَحْمَدُ الْحَبْلَ.",
+   "delivery": "slow",
+   "hold_seconds": 3.1
+  },
+  {
+   "id": "b19",
+   "type": "explain",
+   "heading": "تَمْرِينٌ",
+   "narration": "حَانَ وَقْتُ التَّمْرِينِ! فَكِّرُوا ثُمَّ اخْتَارُوا."
+  },
+  {
+   "id": "b20",
+   "type": "quiz",
+   "question": "أَيُّ كَلِمَةٍ تَبْدَأُ بِحَرْفِ بَاء؟",
+   "options": [
+    "بَيْت",
+    "سَمَكَة",
+    "ذَيْل"
+   ],
+   "answer_index": 0,
+   "narration": "أَيُّ كَلِمَةٍ تَبْدَأُ بِحَرْفِ بَاء؟",
+   "listening": false,
+   "answer_narration": "الْإِجَابَةُ الصَّحِيحَةُ: بَيْت. أَحْسَنْتُمْ!"
+  },
+  {
+   "id": "b21",
+   "type": "quiz",
+   "question": "أَيْنَ حَرْفُ بَاء فِي كَلِمَةِ كَلْب؟",
+   "options": [
+    "فِي الْأَوَّلِ",
+    "فِي الْوَسَطِ",
+    "فِي الْآخِرِ"
+   ],
+   "answer_index": 2,
+   "narration": "أَيْنَ حَرْفُ بَاء فِي كَلِمَةِ كَلْب؟",
+   "listening": false,
+   "answer_narration": "الْإِجَابَةُ الصَّحِيحَةُ: فِي الْآخِرِ. أَحْسَنْتُمْ!"
+  },
+  {
+   "id": "b22",
+   "type": "quiz",
+   "question": "أَيَّ مَقْطَعٍ سَمِعْتُمْ؟",
+   "options": [
+    "بِ",
+    "بَ",
+    "بُ"
+   ],
+   "answer_index": 2,
+   "narration": "اسْمَعُوا جَيِّدًا: بُ. أَيَّ مَقْطَعٍ سَمِعْتُمْ؟",
+   "listening": true,
+   "caption_override": "اسْمَعُوا جَيِّدًا… أَيَّ مَقْطَعٍ سَمِعْتُمْ؟",
+   "answer_narration": "الْإِجَابَةُ الصَّحِيحَةُ: بُ. أَحْسَنْتُمْ!"
+  },
+  {
+   "id": "b23",
+   "type": "quiz",
+   "question": "أَيُّ هَذِهِ الْحُرُوفِ هُوَ حَرْفُ بَاء؟",
+   "options": [
+    "ث",
+    "ب",
+    "ت"
+   ],
+   "answer_index": 1,
+   "narration": "أَيُّ هَذِهِ الْحُرُوفِ هُوَ حَرْفُ بَاء؟",
+   "listening": false,
+   "answer_narration": "الْإِجَابَةُ الصَّحِيحَةُ: بَاء. أَحْسَنْتُمْ!"
+  },
+  {
+   "id": "b24",
+   "type": "outro",
+   "text": "أَحْسَنْتُمْ!",
+   "subtext": "حَرْفُ بَاء",
+   "narration": "الْيَوْمَ تَعَلَّمْنَا حَرْفَ بَاء. إِلَى اللِّقَاءِ فِي الدَّرْسِ الْقَادِمِ!"
+  }
+ ]
+}

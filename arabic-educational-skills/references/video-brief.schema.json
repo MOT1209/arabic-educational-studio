@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "video-brief",
+  "type": "object",
+  "required": [
+    "topic",
+    "learning_goal",
+    "audience",
+    "format",
+    "style",
+    "voice",
+    "approved"
+  ],
+  "properties": {
+    "topic": {
+      "type": "string",
+      "minLength": 2
+    },
+    "learning_goal": {
+      "type": "string",
+      "minLength": 5,
+      "description": "هدف قابل للقياس"
+    },
+    "audience": {
+      "type": "object",
+      "required": [
+        "age_band"
+      ],
+      "properties": {
+        "age_band": {
+          "enum": [
+            "child",
+            "preteen",
+            "teen",
+            "adult"
+          ]
+        },
+        "level": {
+          "type": "string"
+        }
+      }
+    },
+    "format": {
+      "type": "object",
+      "required": [
+        "platform",
+        "aspect"
+      ],
+      "properties": {
+        "platform": {
+          "enum": [
+            "youtube",
+            "shorts",
+            "classroom"
+          ]
+        },
+        "aspect": {
+          "enum": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ]
+        },
+        "duration_seconds": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "subtitles": {
+          "type": "boolean"
+        }
+      }
+    },
+    "style": {
+      "enum": [
+        "cartoon",
+        "cinematic",
+        "hybrid"
+      ]
+    },
+    "characters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ]
+      }
+    },
+    "voice": {
+      "type": "object",
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "human_recording",
+            "tts_service",
+            "subtitles_only"
+          ]
+        }
+      }
+    },
+    "must_have": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "avoid": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "approved": {
+      "type": "boolean"
+    },
+    "style_id": {
+      "type": "string",
+      "description": "معرّف نمط من studio style manager (الأنماط العشرة أو مخصّص)"
+    }
+  }
+}

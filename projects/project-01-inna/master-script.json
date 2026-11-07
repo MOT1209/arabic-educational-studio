@@ -1,0 +1,494 @@
+{
+  "version": "1.0.0",
+  "lesson": "إنَّ وأخواتها: القاعدة الأساسية (الدرس 1 — إنَّ)",
+  "subject": "nahw",
+  "language": "ar",
+  "target_level": "beginner",
+  "objectives": [
+    "يميّز المشاهد اسم إنَّ المنصوب من خبرها المرفوع",
+    "يوضح أثر إنَّ: تنصب الاسم وترفع الخبر (الضمة تصير فتحة)",
+    "يكتشف الخطأ الشائع (إنَّ الطالبُ) ويصححه (إنَّ الطالبَ)"
+  ],
+  "style": "سبورة تعليمية مع شخصية معلم (الأستاذ سامي) وشخصية تلميذة (ليلى)",
+  "characters": [
+    {
+      "id": "teacher",
+      "name": "الأستاذ سامي",
+      "role": "معلم",
+      "card": "characters/teacher.json",
+      "tts_voice": "ar-SA-male"
+    },
+    {
+      "id": "layla",
+      "name": "ليلى",
+      "role": "تلميذة",
+      "card": "characters/layla.json",
+      "tts_voice": "ar-SA-female"
+    },
+    {
+      "id": "student",
+      "name": "الطالب",
+      "role": "تلميذ",
+      "card": "characters/student.json"
+    }
+  ],
+  "references": [],
+  "output": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "formats": [
+      "16:9"
+    ]
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "duration_seconds": 19,
+      "learning_goal": "عرض الجملة الاسمية قبل دخول إنَّ",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "مَرْحَبًا! الْيَوْمَ نَتَعَلَّمُ إنَّ وأخواتها. جُمْلَةٌ: الطَّالِبُ مُجْتَهِدٌ.",
+          "text_plain": "مرحبا! اليوم نتعلم إن وأخواتها. جملة: الطالب مجتهد.",
+          "start": 1.0,
+          "end": 8.0,
+          "id": "scene_01_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "الطَّالِبُ مَرْفُوعٌ، ومُجْتَهِدٌ مَرْفُوعٌ.",
+          "text_plain": "الطالب مرفوع، ومجتهد مرفوع.",
+          "start": 9.0,
+          "end": 14.0,
+          "id": "scene_01_02"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "الطَّالِبُ مُجْتَهِدٌ",
+          "text_plain": "الطالب مجتهد",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 19.0
+        }
+      ],
+      "hash": "cf1c597eb93d"
+    },
+    {
+      "id": "scene_02",
+      "duration_seconds": 25,
+      "learning_goal": "أثر إنَّ: تنصب الاسم وترفع الخبر (الضمة تصير فتحة)",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "إِذَا دَخَلَتْ إنَّ: إِنَّ الطَّالِبَ مُجْتَهِدٌ.",
+          "text_plain": "إذا دخلت إن: إن الطالب مجتهد.",
+          "start": 1.0,
+          "end": 6.0,
+          "id": "scene_02_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "الطَّالِبَ: مَنْصُوبٌ (الضمة صارت فتحة). مُجْتَهِدٌ: مَرْفُوعٌ.",
+          "text_plain": "الطالب: منصوب (الضمة صارت فتحة). مجتهد: مرفوع.",
+          "start": 7.0,
+          "end": 14.0,
+          "id": "scene_02_02"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "إِنَّ تَنْصِبُ الاسمَ وتَرْفَعُ الخبرَ.",
+          "text_plain": "إن تنصب الاسم وترفع الخبر.",
+          "start": 15.0,
+          "end": 20.0,
+          "id": "scene_02_03"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "إِنَّ الطَّالِبَ مُجْتَهِدٌ",
+          "text_plain": "إن الطالب مجتهد",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 25.0
+        },
+        {
+          "type": "highlight",
+          "color_role": "اسم إن",
+          "text_diacritized": "الطَّالِبَ",
+          "text_plain": "الطالب",
+          "start": 7.0,
+          "end": 25.0
+        }
+      ],
+      "hash": "29f68bf3ac28"
+    },
+    {
+      "id": "scene_03",
+      "duration_seconds": 30,
+      "learning_goal": "اسم إنَّ وخبرها (منصوب/مرفوع) بلونين ثابتين",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "اسم إنَّ: منصوب. خبرها: مرفوع.",
+          "text_plain": "اسم إن: منصوب. خبرها: مرفوع.",
+          "start": 1.0,
+          "end": 6.0,
+          "id": "scene_03_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "اسم إنَّ يُسمَّى «اسم إنَّ». خبرها يُسمَّى «خبر إنَّ».",
+          "text_plain": "اسم إن يسمى «اسم إن». خبرها يسمى «خبر إن».",
+          "start": 7.0,
+          "end": 14.0,
+          "id": "scene_03_02"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "تذكّر: اسم إنَّ منصوب، خبرها مرفوع.",
+          "text_plain": "تذكّر: اسم إن منصوب، خبرها مرفوع.",
+          "start": 15.0,
+          "end": 22.0,
+          "id": "scene_03_03"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "اسم إنَّ: منصوب  |  خبرها: مرفوع",
+          "text_plain": "اسم إن: منصوب  |  خبرها: مرفوع",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 30.0
+        }
+      ],
+      "hash": "c964f7c7ff6d"
+    },
+    {
+      "id": "scene_04",
+      "duration_seconds": 20,
+      "learning_goal": "المثال الأول",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "مِثالٌ ١: إِنَّ الشَّمْسَ مُشْرِقَةٌ.",
+          "text_plain": "مثال ١: إن الشمس مشرقة.",
+          "start": 1.0,
+          "end": 5.0,
+          "id": "scene_04_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "الشَّمْسَ: اسم إنَّ (منصوب). مُشْرِقَةٌ: خبر (مرفوع).",
+          "text_plain": "الشمس: اسم إن (منصوب). مشرقة: خبر (مرفوع).",
+          "start": 6.0,
+          "end": 14.0,
+          "id": "scene_04_02"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "إِنَّ الشَّمْسَ مُشْرِقَةٌ",
+          "text_plain": "إن الشمس مشرقة",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 20.0
+        }
+      ],
+      "hash": "207cc7199a01"
+    },
+    {
+      "id": "scene_05",
+      "duration_seconds": 20,
+      "learning_goal": "المثال الثاني مع ليلى",
+      "background": "classroom",
+      "characters": [
+        "teacher",
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "student",
+          "text_diacritized": "الأستاذ! إِنَّ المَدْرَسَةَ جَمِيلَةٌ.",
+          "text_plain": "الأستاذ! إن المدرسة جميلة.",
+          "start": 1.0,
+          "end": 5.0,
+          "id": "scene_05_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "أَحْسَنْتِ! المَدْرَسَةَ منصوب، جَمِيلَةٌ مرفوع.",
+          "text_plain": "أحسنت! المدرسة منصوب، جميلة مرفوع.",
+          "start": 6.0,
+          "end": 12.0,
+          "id": "scene_05_02"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "إِنَّ المَدْرَسَةَ جَمِيلَةٌ",
+          "text_plain": "إن المدرسة جميلة",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 20.0
+        }
+      ],
+      "hash": "0551430e4d23"
+    },
+    {
+      "id": "scene_06",
+      "duration_seconds": 20,
+      "learning_goal": "المثال الثالث",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "مِثالٌ ٣: إِنَّ الْعِلْمَ نَافِعٌ.",
+          "text_plain": "مثال ٣: إن العلم نافع.",
+          "start": 1.0,
+          "end": 5.0,
+          "id": "scene_06_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "الْعِلْمَ: اسم إنَّ (منصوب). نَافِعٌ: خبر (مرفوع).",
+          "text_plain": "العلم: اسم إن (منصوب). نافع: خبر (مرفوع).",
+          "start": 6.0,
+          "end": 14.0,
+          "id": "scene_06_02"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "إِنَّ الْعِلْمَ نَافِعٌ",
+          "text_plain": "إن العلم نافع",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 20.0
+        }
+      ],
+      "hash": "9e2f1ea78789"
+    },
+    {
+      "id": "scene_07",
+      "duration_seconds": 30,
+      "learning_goal": "الخطأ الشائع",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "خَطَأٌ شائع: «إِنَّ الطَّالِبُ مُجْتَهِدٌ» (الطالبُ مرفوع — خطأ!).",
+          "text_plain": "خطأ شائع: «إن الطالبُ مجتهد» (الطالبُ مرفوع — خطأ!).",
+          "start": 1.0,
+          "end": 8.0,
+          "id": "scene_07_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "الصَّواب: «إِنَّ الطَّالِبَ مُجْتَهِدٌ» (الطالبَ منصوب).",
+          "text_plain": "الصواب: «إن الطالبَ مجتهد» (الطالبَ منصوب).",
+          "start": 9.0,
+          "end": 16.0,
+          "id": "scene_07_02"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "تذكّر: إنَّ تنصب الاسم (فتحة) وترفع الخبر (ضمة).",
+          "text_plain": "تذكّر: إن تنصب الاسم (فتحة) وترفع الخبر (ضمة).",
+          "start": 17.0,
+          "end": 24.0,
+          "id": "scene_07_03"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "إِنَّ الطَّالِبَ مُجْتَهِدٌ ✓     إِنَّ الطَّالِبُ مُجْتَهِدٌ ✗",
+          "text_plain": "إن الطالبَ مجتهد ✓     إن الطالبُ مجتهد ✗",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 30.0
+        }
+      ],
+      "hash": "2aab5a9dfcce"
+    },
+    {
+      "id": "scene_08",
+      "duration_seconds": 40,
+      "learning_goal": "تمرين: اختر الجملة الصحيحة",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "تَمْرِينٌ! اخْتَرِ الجملةَ الصحيحةَ.",
+          "text_plain": "تمرين! اختر الجملة الصحيحة.",
+          "start": 1.0,
+          "end": 5.0,
+          "id": "scene_08_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "١) إِنَّ الْمَاءَ بَارِدٌ.   ٢) إِنَّ الْمَاءُ بَارِدٌ.",
+          "text_plain": "١) إن الماءَ بارد.   ٢) إن الماءُ بارد.",
+          "start": 6.0,
+          "end": 14.0,
+          "id": "scene_08_02"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "الإِجابة: ١ (الماءَ منصوب).",
+          "text_plain": "الإجابة: ١ (الماءَ منصوب).",
+          "start": 15.0,
+          "end": 20.0,
+          "id": "scene_08_03"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "٣) إِنَّ الطَّائِرَ يُغَرِّدُ.   ٤) إِنَّ الطَّائِرُ يُغَرِّدُ.",
+          "text_plain": "٣) إن الطائرَ يغرّد.   ٤) إن الطائرُ يغرّد.",
+          "start": 21.0,
+          "end": 30.0,
+          "id": "scene_08_04"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "الإِجابة: ٣ (الطائرَ منصوب).",
+          "text_plain": "الإجابة: ٣ (الطائرَ منصوب).",
+          "start": 31.0,
+          "end": 38.0,
+          "id": "scene_08_05"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "٥) إِنَّ الْكِتَابَ مُفِيدٌ.   ٦) إِنَّ الْكِتَابُ مُفِيدٌ.",
+          "text_plain": "٥) إن الكتابَ مفيد.   ٦) إن الكتابُ مفيد.",
+          "start": 39.0,
+          "end": 40.0,
+          "id": "scene_08_06"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "quiz",
+          "start": 1.0,
+          "end": 40.0,
+          "options": [
+            {
+              "text_diacritized": "إِنَّ الْمَاءَ بَارِدٌ",
+              "text_plain": "إِنَّ الْمَاءَ بَارِدٌ"
+            },
+            {
+              "text_diacritized": "إِنَّ الْمَاءُ بَارِدٌ",
+              "text_plain": "إِنَّ الْمَاءُ بَارِدٌ"
+            }
+          ],
+          "countdown_from": 5,
+          "reveal": 35.0,
+          "answer_index": 0,
+          "layout": "rows"
+        }
+      ],
+      "hash": "f0830a2bc6d6"
+    },
+    {
+      "id": "scene_09",
+      "duration_seconds": 19,
+      "learning_goal": "ملخص الدرس",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "مُلَخَّصٌ: إِنَّ تَنْصِبُ الاسمَ (فتحة) وتَرْفَعُ الخبرَ (ضمة).",
+          "text_plain": "ملخص: إن تنصب الاسم (فتحة) وترفع الخبر (ضمة).",
+          "start": 1.0,
+          "end": 8.0,
+          "id": "scene_09_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "اسم إنَّ منصوب، خبرها مرفوع. أَحْسَنْتُم!",
+          "text_plain": "اسم إن منصوب، خبرها مرفوع. أحسنتم!",
+          "start": 9.0,
+          "end": 15.0,
+          "id": "scene_09_02"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "إِنَّ + اسم (منصوب) + خبر (مرفوع)",
+          "text_plain": "إن + اسم (منصوب) + خبر (مرفوع)",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 19.0
+        }
+      ],
+      "hash": "594bc55604da"
+    },
+    {
+      "id": "scene_10",
+      "duration_seconds": 7,
+      "learning_goal": "الدرس القادم",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "الدَّرْسُ القَادِمُ: أَنَّ وكَأَنَّ. اشْتَرِكْ وفعِّلِ الجرس!",
+          "text_plain": "الدرس القادم: أن وكأن. اشترك وفعّل الجرس!",
+          "start": 1.0,
+          "end": 6.0,
+          "id": "scene_10_01"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "الدَّرْسُ القَادِمُ: أَنَّ وكَأَنَّ",
+          "text_plain": "الدرس القادم: أن وكأن",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 7.0
+        }
+      ],
+      "hash": "098d11cfb298"
+    }
+  ]
+}

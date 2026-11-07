@@ -1,0 +1,392 @@
+{
+  "version": "1.0.0",
+  "lesson": "إنَّ وأخواتها: لكنَّ، ليتَ، لعلَّ (الدرس 3)",
+  "subject": "nahw",
+  "language": "ar",
+  "target_level": "beginner",
+  "objectives": [
+    "يميّز المشاهد لكنَّ (استدراك) من ليتَ (تمنٍّ) من لعلَّ (رجاء/توقع)",
+    "يوضح أثر كل حرف: ينصب الاسم ويُرفع الخبر",
+    "يستخدم كل حرف في جملة مناسبة"
+  ],
+  "style": "سبورة تعليمية مع شخصية معلم (الأستاذ سامي)",
+  "characters": [
+    {
+      "id": "teacher",
+      "name": "الأستاذ سامي",
+      "role": "معلم",
+      "card": "characters/teacher.json",
+      "tts_voice": "ar-SA-male"
+    }
+  ],
+  "references": [],
+  "output": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "formats": [
+      "16:9"
+    ]
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "duration_seconds": 20,
+      "learning_goal": "مقدمة: إنَّ وأخواتها — ٦ أحرف",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "مَرْحَبًا! الْيَوْمَ نُكَمِّلُ إنَّ وأخواتها: لكنَّ، ليتَ، لعلَّ.",
+          "text_plain": "مرحبا! اليوم نكمل إن وأخواتها: لكن، ليت، لعل.",
+          "start": 1.0,
+          "end": 8.0,
+          "id": "scene_01_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "إِنَّ وأخواتها: ٦ أحرف، كلها تنصب الاسم وتُرفع الخبر.",
+          "text_plain": "إن وأخواتها: ٦ أحرف، كلها تنصب الاسم وتُرفع الخبر.",
+          "start": 9.0,
+          "end": 16.0,
+          "id": "scene_01_02"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "إنَّ وأخواتها: ٦ أحرف",
+          "text_plain": "إن وأخواتها: ٦ أحرف",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 20.0
+        }
+      ],
+      "hash": "b671bb2eb321"
+    },
+    {
+      "id": "scene_02",
+      "duration_seconds": 30,
+      "learning_goal": "لكنَّ — للاستدراك",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "لكنَّ: للاستدراك. تُسبق بكلام.",
+          "text_plain": "لكن: للاستدراك. تُسبق بكلام.",
+          "start": 1.0,
+          "end": 6.0,
+          "id": "scene_02_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "مِثال: الْوَاجِبُ سَهْلٌ، لكنَّ الوَقْتَ قَصِيرٌ.",
+          "text_plain": "مثال: الواجب سهل، لكن الوقت قصير.",
+          "start": 7.0,
+          "end": 14.0,
+          "id": "scene_02_02"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "الْوَقْتَ: اسم لكنَّ (منصوب). قَصِيرٌ: خبر (مرفوع).",
+          "text_plain": "الوقت: اسم لكن (منصوب). قصير: خبر (مرفوع).",
+          "start": 15.0,
+          "end": 24.0,
+          "id": "scene_02_03"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "الْوَاجِبُ سَهْلٌ، لكنَّ الوَقْتَ قَصِيرٌ",
+          "text_plain": "الواجب سهل، لكن الوقت قصير",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 30.0
+        }
+      ],
+      "hash": "410eba9dce02"
+    },
+    {
+      "id": "scene_03",
+      "duration_seconds": 30,
+      "learning_goal": "ليتَ — للتمني",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "ليتَ: للتمني. «أُتمنى أن...»",
+          "text_plain": "ليت: للتمني. «أتمنى أن...»",
+          "start": 1.0,
+          "end": 6.0,
+          "id": "scene_03_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "مِثال: ليتَ الصَّيْفَ قَرِيبٌ.",
+          "text_plain": "مثال: ليت الصيف قريب.",
+          "start": 7.0,
+          "end": 12.0,
+          "id": "scene_03_02"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "الصَّيْفَ: اسم ليتَ (منصوب). قَرِيبٌ: خبر (مرفوع).",
+          "text_plain": "الصيف: اسم ليت (منصوب). قريب: خبر (مرفوع).",
+          "start": 13.0,
+          "end": 22.0,
+          "id": "scene_03_03"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "ليتَ الصَّيْفَ قَرِيبٌ",
+          "text_plain": "ليت الصيف قريب",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 30.0
+        }
+      ],
+      "hash": "223a0748c6d6"
+    },
+    {
+      "id": "scene_04",
+      "duration_seconds": 30,
+      "learning_goal": "لعلَّ — للرجاء والتوقع",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "لعلَّ: للرجاء والتوقع. «رُبَّما...»",
+          "text_plain": "لعل: للرجاء والتوقع. «ربما...»",
+          "start": 1.0,
+          "end": 6.0,
+          "id": "scene_04_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "مِثال: لعلَّ الْغَدَ مُشْمِسٌ.",
+          "text_plain": "مثال: لعل الغد مشمس.",
+          "start": 7.0,
+          "end": 12.0,
+          "id": "scene_04_02"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "الْغَدَ: اسم لعلَّ (منصوب). مُشْمِسٌ: خبر (مرفوع).",
+          "text_plain": "الغد: اسم لعل (منصوب). مشمس: خبر (مرفوع).",
+          "start": 13.0,
+          "end": 22.0,
+          "id": "scene_04_03"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "لعلَّ الْغَدَ مُشْمِسٌ",
+          "text_plain": "لعل الغد مشمس",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 30.0
+        }
+      ],
+      "hash": "473a01202c1a"
+    },
+    {
+      "id": "scene_05",
+      "duration_seconds": 40,
+      "learning_goal": "مقارنة: إنَّ، أنَّ، كأنَّ، لكنَّ، ليتَ، لعلَّ",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "إِنَّ: توكيد. أَنَّ: بعد فعل. كَأَنَّ: تشبيه.",
+          "text_plain": "إن: توكيد. أن: بعد فعل. كأن: تشبيه.",
+          "start": 1.0,
+          "end": 8.0,
+          "id": "scene_05_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "لكنَّ: استدراك. ليتَ: تمنٍّ. لعلَّ: رجاء.",
+          "text_plain": "لكن: استدراك. ليت: تمنٍّ. لعل: رجاء.",
+          "start": 9.0,
+          "end": 16.0,
+          "id": "scene_05_02"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "كُلُّها: اسْمٌ مَنْصُوبٌ، خَبَرٌ مَرْفُوعٌ.",
+          "text_plain": "كلها: اسم منصوب، خبر مرفوع.",
+          "start": 17.0,
+          "end": 24.0,
+          "id": "scene_05_03"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "إِنَّ — أَنَّ — كَأَنَّ — لكنَّ — ليتَ — لعلَّ",
+          "text_plain": "إن — أن — كأن — لكن — ليت — لعل",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 40.0
+        }
+      ],
+      "hash": "288065280b08"
+    },
+    {
+      "id": "scene_06",
+      "duration_seconds": 40,
+      "learning_goal": "تمرين: اختر الحرف المناسب",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "تَمْرِينٌ! اخْتَرِ الحرفَ المناسبَ.",
+          "text_plain": "تمرين! اختر الحرف المناسب.",
+          "start": 1.0,
+          "end": 5.0,
+          "id": "scene_06_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "١) الْوَاجِبُ سَهْلٌ ___ الوَقْتَ قَصِيرٌ. (لكنَّ)",
+          "text_plain": "١) الواجب سهل ___ الوقت قصير. (لكن)",
+          "start": 6.0,
+          "end": 14.0,
+          "id": "scene_06_02"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "٢) ___ الصَّيْفَ قَرِيبٌ. (ليتَ)",
+          "text_plain": "٢) ___ الصيف قريب. (ليت)",
+          "start": 15.0,
+          "end": 22.0,
+          "id": "scene_06_03"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "٣) ___ الْغَدَ مُشْمِسٌ. (لعلَّ)",
+          "text_plain": "٣) ___ الغد مشمس. (لعل)",
+          "start": 23.0,
+          "end": 30.0,
+          "id": "scene_06_04"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "quiz",
+          "start": 1.0,
+          "end": 40.0,
+          "options": [
+            {
+              "text_diacritized": "لكنَّ",
+              "text_plain": "لكنَّ"
+            },
+            {
+              "text_diacritized": "ليتَ",
+              "text_plain": "ليتَ"
+            },
+            {
+              "text_diacritized": "لعلَّ",
+              "text_plain": "لعلَّ"
+            }
+          ],
+          "countdown_from": 5,
+          "reveal": 35.0,
+          "answer_index": 0,
+          "layout": "rows"
+        }
+      ],
+      "hash": "60fa5cdc9275"
+    },
+    {
+      "id": "scene_07",
+      "duration_seconds": 20,
+      "learning_goal": "ملخص",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "مُلَخَّصٌ: إنَّ وأخواتها — ٦ أحرف، كلها تنصب الاسم وتُرفع الخبر.",
+          "text_plain": "ملخص: إن وأخواتها — ٦ أحرف، كلها تنصب الاسم وتُرفع الخبر.",
+          "start": 1.0,
+          "end": 8.0,
+          "id": "scene_07_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "أَحْسَنْتُم! الدرس القادم: كان وأخواتها.",
+          "text_plain": "أحسنتم! الدرس القادم: كان وأخواتها.",
+          "start": 9.0,
+          "end": 15.0,
+          "id": "scene_07_02"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "إِنَّ — أَنَّ — كَأَنَّ — لكنَّ — ليتَ — لعلَّ",
+          "text_plain": "إن — أن — كأن — لكن — ليت — لعل",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 20.0
+        }
+      ],
+      "hash": "c7b290b1f906"
+    },
+    {
+      "id": "scene_08",
+      "duration_seconds": 20,
+      "learning_goal": "الدرس القادم",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "الدَّرْسُ القَادِمُ: كان وأخواتها. اشْتَرِكْ وفعِّلِ الجرس!",
+          "text_plain": "الدرس القادم: كان وأخواتها. اشترك وفعّل الجرس!",
+          "start": 1.0,
+          "end": 6.0,
+          "id": "scene_08_01"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "الدَّرْسُ القَادِمُ: كان وأخواتها",
+          "text_plain": "الدرس القادم: كان وأخواتها",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 20.0
+        }
+      ],
+      "hash": "73f5856f7556"
+    }
+  ]
+}

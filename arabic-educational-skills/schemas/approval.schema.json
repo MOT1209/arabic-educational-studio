@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Approval record",
+  "type": "object",
+  "required": [
+    "seq",
+    "project_id",
+    "stage_id",
+    "decision",
+    "timestamp",
+    "revision",
+    "feedback",
+    "actor",
+    "prev_hash",
+    "hash"
+  ],
+  "properties": {
+    "seq": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "project_id": {
+      "type": "string"
+    },
+    "stage_id": {
+      "type": "string"
+    },
+    "decision": {
+      "enum": [
+        "approve",
+        "reject",
+        "modify",
+        "regenerate_section",
+        "rewind"
+      ]
+    },
+    "timestamp": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "feedback": {
+      "type": "string"
+    },
+    "actor": {
+      "type": "string",
+      "minLength": 1
+    },
+    "section": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "prev_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}
