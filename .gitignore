@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Secrets
+.env
+**/.env
+config/credentials.json
+
+# Build/output
+**/build/
+**/dist/
+**/.next/
+**/exports/
+*.mp4
+*.mp3
+*.mpeg
+
+# Python cache
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large generated
+arabic-educational-skills/remotion/node_modules/
+tools/youtube-automation-agent/node_modules/
+tools/youtube-automation-agent/data/
+tools/youtube-automation-agent/uploads/
+
+# Logs
+*.log
+build_out*.txt
+buildpy_repr.txt
+build_repr*.txt
+val_decoded.txt
