@@ -25,7 +25,7 @@ function apiKey() {
 }
 
 function requestApiKey() {
-  const key = prompt('Enter the API_KEY value from your .env. It stays in this browser only.', apiKey());
+  const key = prompt('أدخل قيمة API_KEY من ملف .env. تُحفظ في هذا المتصفح فقط.', apiKey());
   if (key !== null) localStorage.setItem('yaa_api_key', key.trim());
   return key;
 }
@@ -63,9 +63,9 @@ function empty(message) {
 }
 
 function formatDate(value, includeTime = true) {
-  if (!value) return 'Not scheduled';
+  if (!value) return 'غير مجدول';
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return 'Not scheduled';
+  if (Number.isNaN(date.getTime())) return 'غير مجدول';
   return new Intl.DateTimeFormat(undefined, {
     month: 'short', day: 'numeric',
     ...(ui.state?.profile?.timezone ? { timeZone: ui.state.profile.timezone } : {}),
@@ -99,7 +99,7 @@ async function refreshDashboard(silent = false) {
     ui.state = await api('/api/dashboard');
     renderDashboard();
   } catch (error) {
-    $('#system-label').textContent = 'Dashboard unavailable';
+    $('#system-label').textContent = 'لوحة التحكم غير متاحة';
     $('#system-dot').classList.remove('online');
     if (!silent) showToast(error.message, 'error');
   } finally {
@@ -114,13 +114,13 @@ function renderDashboard() {
   const scheduled = state.schedule.filter(item => item.status === 'scheduled');
   const actionableJobs = state.jobs.filter(job => ['queued', 'running', 'failed', 'interrupted'].includes(job.status));
 
-  $('#brand-name').textContent = state.profile?.channel_name || 'Automation Studio';
+  $('#brand-name').textContent = state.profile?.channel_name || 'استوديو الأتمتة';
   $('#setup-banner').classList.toggle('hidden', !state.system.setupRequired);
   $('#system-label').textContent = state.system.setupRequired
-    ? 'Setup required'
-    : state.system.automationPaused ? 'Automation paused' : `${state.system.agents.length} agents online`;
+    ? 'يتطلب إعداد'
+    : state.system.automationPaused ? 'الأتمتة متوقفة' : `${state.system.agents.length} agents online`;
   $('#system-dot').classList.toggle('online', state.system.initialized && !state.system.automationPaused && !state.system.setupRequired);
-  $('#automation-toggle').textContent = state.system.automationPaused ? 'Resume automation' : 'Pause automation';
+  $('#automation-toggle').textContent = state.system.automationPaused ? 'استئناف الأتمتة' : 'إيقاف الأتمتة';
   $('#automation-toggle').disabled = state.system.setupRequired;
   $('#generate-button').disabled = state.system.setupRequired;
   $('#review-badge').textContent = reviews.length;
@@ -154,10 +154,10 @@ function renderReadiness(readiness = {}) {
   statusNode.textContent = readiness.stale && status !== 'unverified' ? `${label(status)} · stale` : label(status);
 
   const titles = {
-    passed: 'The production path is verified.',
-    warning: 'Core checks passed with warnings.',
-    failed: 'Automation is blocked until this is fixed.',
-    unverified: 'Prove the pipeline, without uploading.'
+    passed: 'تم التحقق من مسار الإنتاج.',
+    warning: 'الفحوصات الأساسية نجحت مع تحذيرات.',
+    failed: 'الأتمتة متوقفة حتى إصلاح هذا.',
+    unverified: 'أثبت المسار، بدون رفع.'
   };
   $('#readiness-title').textContent = titles[status] || titles.unverified;
   const counts = readiness.summary || {};
@@ -174,13 +174,13 @@ function renderReadiness(readiness = {}) {
       <div class="readiness-check-heading"><span class="readiness-icon" aria-hidden="true">${check.status === 'passed' ? '✓' : check.status === 'failed' ? '×' : '!'}</span><div><strong>${escapeHTML(check.label)}</strong><div class="meta-line">${escapeHTML(label(check.status))}${check.blocking ? ' · blocking' : ' · optional'} · ${(check.durationMs || 0) / 1000}s</div></div></div>
       <p>${escapeHTML(check.message)}</p>
       ${check.remediation ? `<small><strong>Next:</strong> ${escapeHTML(check.remediation)}</small>` : ''}
-    </article>`).join('') : empty('Run the verified check to inspect every production dependency.');
+    </article>`).join('') : empty('شغّل الفحص المُتحقق لفحص كل تبعية إنتاج.');
 }
 
 function renderReviews(reviews) {
   const container = $('#review-list');
   if (!reviews.length) {
-    container.innerHTML = empty('Nothing is waiting. New content will appear here after quality review.');
+    container.innerHTML = empty('لا شيء بانتظار. سيظهر محتوى جديد بعد مراجعة الجودة.');
     return;
   }
   container.innerHTML = reviews.slice(0, 5).map(item => `
@@ -194,7 +194,7 @@ function renderReviews(reviews) {
 function renderJobs(jobs) {
   const container = $('#job-list');
   if (!jobs.length) {
-    container.innerHTML = empty('No generation runs yet.');
+    container.innerHTML = empty('لا توجد عمليات توليد بعد.');
     return;
   }
   const stages = ['strategy', 'script', 'thumbnail', 'seo', 'production', 'quality_review'];
@@ -209,7 +209,7 @@ function renderJobs(jobs) {
     return `
     <article class="job-card">
       <div class="job-meta">
-        <strong>${escapeHTML(job.title || job.topic || 'Agent-selected topic')}</strong>
+        <strong>${escapeHTML(job.title || job.topic || 'موضوع مختار من الوكيل')}</strong>
         <div class="meta-line">${statusChip(job.status)} · ${escapeHTML(label(job.stage))} · ${timeAgo(job.updated_at)}</div>
         ${checkpoints.length ? `<div class="checkpoint-line">${completed.size}/${stages.length} stages saved${job.details?.reusedStages?.length ? ` · ${job.details.reusedStages.length} reused` : ''}</div>` : ''}
         ${mediaTasks.length ? `<div class="checkpoint-line">Video: ${mediaCompleted}/${mediaTasks.length} clips ready · ${escapeHTML(mediaProviders)}</div>` : ''}
@@ -224,7 +224,7 @@ function renderJobs(jobs) {
 function renderSchedule(schedule, selector) {
   const container = $(selector);
   if (!schedule.length) {
-    container.innerHTML = empty('No approved videos are scheduled.');
+    container.innerHTML = empty('لا توجد videos معتمدة مجدولة.');
     return;
   }
   container.innerHTML = schedule.map(item => `
@@ -241,7 +241,7 @@ function renderNotifications(notifications, events) {
     : events.map(event => ({ level: event.status === 'error' ? 'error' : 'info', title: label(event.event_type), message: event.data?.error || label(event.status), created_at: event.created_at }));
   const container = $('#notification-list');
   if (!items.length) {
-    container.innerHTML = empty('No activity has been recorded yet.');
+    container.innerHTML = empty('لم يتم تسجيل أي نشاط بعد.');
     return;
   }
   container.innerHTML = items.slice(0, 7).map(item => `
@@ -259,14 +259,14 @@ function renderPipeline(items) {
   );
   const container = $('#pipeline-list');
   if (!filtered.length) {
-    container.innerHTML = empty('No content matches this view.');
+    container.innerHTML = empty('لا يوجد محتوى يطابق هذا العرض.');
     return;
   }
   container.innerHTML = filtered.map(item => {
     const state = item.schedule_status || item.review_status || item.status;
     const next = nextAction(item);
     return `<article class="pipeline-item" data-open-content="${escapeHTML(item.id)}">
-      <div class="pipeline-title"><strong>${escapeHTML(item.title)}</strong><span>${escapeHTML(item.topic || 'No topic recorded')} · ${formatDate(item.created_at)}</span></div>
+      <div class="pipeline-title"><strong>${escapeHTML(item.title)}</strong><span>${escapeHTML(item.topic || 'لم يُسجّل topic')} · ${formatDate(item.created_at)}</span></div>
       <div class="pipeline-col"><span>State</span><strong>${statusChip(state)}</strong></div>
       <div class="pipeline-col"><span>Quality</span><strong>${qualityScore(item.qualityChecks)} / 100</strong></div>
       <button class="button secondary small">${escapeHTML(next)} →</button>
@@ -280,10 +280,10 @@ function qualityScore(checks) {
 }
 
 function nextAction(item) {
-  if (item.schedule_status === 'published') return 'View';
-  if (item.review_status === 'needs_attention') return 'Fix issues';
+  if (item.schedule_status === 'published') return 'عرض';
+  if (item.review_status === 'needs_attention') return 'إصلاح المشاكل';
   if (item.review_status === 'needs_review') return 'Review';
-  if (item.schedule_status === 'scheduled') return 'Scheduled';
+  if (item.schedule_status === 'scheduled') return 'مجدول';
   return 'Inspect';
 }
 
@@ -294,12 +294,12 @@ function renderCalendar(schedule) {
 function renderIdeas(ideas) {
   const container = $('#idea-list');
   if (!ideas.length) {
-    container.innerHTML = empty('Add promising topics here before spending generation credits.');
+    container.innerHTML = empty('أضف topics واعدة هنا قبل إنفاق credits التوليد.');
     return;
   }
   container.innerHTML = ideas.map(idea => `
     <article class="idea-card">
-      <div class="idea-meta"><strong>${escapeHTML(idea.topic)}</strong><div class="meta-line">${escapeHTML(idea.angle || idea.rationale || 'No angle added')} · ${statusChip(idea.status)}</div></div>
+      <div class="idea-meta"><strong>${escapeHTML(idea.topic)}</strong><div class="meta-line">${escapeHTML(idea.angle || idea.rationale || 'لم تُضف زاوية')} · ${statusChip(idea.status)}</div></div>
       ${idea.status === 'backlog' ? `<button class="button secondary small" data-generate-idea="${escapeHTML(idea.id)}">Generate</button>` : ''}
     </article>`).join('');
 }
@@ -1313,7 +1313,7 @@ document.addEventListener('click', async event => {
         method: 'POST',
         body: JSON.stringify({ measurementWindow: refreshRetention.dataset.measurementWindow || 'rolling' })
       });
-      showToast('Retention curve refreshed from YouTube Analytics.');
+      showToast('تم تحديث منحنى الاحتفاظ من تحليلات YouTube.');
       await refreshDashboard(true);
     } catch (error) {
       showToast(error.message, 'error');
@@ -1366,7 +1366,7 @@ document.addEventListener('click', async event => {
   if (replyApprove) {
     const card = replyApprove.closest('[data-reply-card]');
     const text = card?.querySelector('[data-reply-text]')?.value || '';
-    if (!text.trim()) return showToast('Reply text is empty.', 'error');
+    if (!text.trim()) return showToast('نص الرد فارغ.', 'error');
     if (confirm(`Post this reply to YouTube?\n\n${text}`)) {
       await mutate(`/api/engagement/replies/${encodeURIComponent(replyApprove.dataset.replyApprove)}/approve`, 'POST', { confirmed: true, editedText: text }, 'Reply posted to YouTube.').catch(() => {});
       ui.engagementDetail = null;
@@ -1602,7 +1602,7 @@ document.addEventListener('click', async event => {
   const reschedule = event.target.closest('[data-reschedule-content]');
   if (reschedule) {
     const publishTime = contentFormData().publishTime;
-    if (!publishTime) return showToast('Choose a future publish time first.', 'error');
+    if (!publishTime) return showToast('اختر وقت نشر مستقبلي أولاً.', 'error');
     try {
       await mutate(`/api/content/${encodeURIComponent(reschedule.dataset.rescheduleContent)}/schedule`, 'PATCH', { publishTime }, 'Content rescheduled.');
       await openContent(reschedule.dataset.rescheduleContent);
@@ -1791,7 +1791,7 @@ $('#profile-form').addEventListener('submit', async event => {
 });
 
 $('#api-key-button').addEventListener('click', () => {
-  if (requestApiKey() !== null) showToast('Dashboard API key saved in this browser.');
+  if (requestApiKey() !== null) showToast('تم حفظ مفتاح API في هذا المتصفح.');
 });
 
 const initialView = location.hash.slice(1);
