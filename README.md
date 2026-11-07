@@ -50,3 +50,9 @@ AI vedio/
 - النص العربي يُركَّب برمجياً (HTML/SVG) — لا يُعتمد على مولدات الصور
 - كل مشهد يحتاج `id` و `hash` (يُحسب بـ `validate_script.py --update-hashes`)
 PYEOF
+
+## Tools (الأدوات)
+انظر tools/README.md — 3 مستودعات مضافة:
+- tools/elephant-goldfish-model/ (EGM: تصميم/مراجعة برمجيات)
+- tools/youtube-agent-skill/ (11 مهارة YouTube — skills في .claude/skills/yt-*)
+- tools/youtube-automation-agent/ (وكيل أتمتة YouTube — self-hosted, npm start)

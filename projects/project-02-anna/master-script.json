@@ -1,0 +1,368 @@
+{
+  "version": "1.0.0",
+  "lesson": "إنَّ وأخواتها: أنَّ وكأنَّ (الدرس 2)",
+  "subject": "nahw",
+  "language": "ar",
+  "target_level": "beginner",
+  "objectives": [
+    "يميّز المشاهد أنَّ (بعد فعل) من كأنَّ (تشبيه)",
+    "يوضح أثر كل حرف: ينصب الاسم ويُرفع الخبر",
+    "يستخدم كل حرف في جملة مناسبة"
+  ],
+  "style": "سبورة تعليمية مع شخصية معلم (الأستاذ سامي)",
+  "characters": [
+    {
+      "id": "teacher",
+      "name": "الأستاذ سامي",
+      "role": "معلم",
+      "card": "characters/teacher.json",
+      "tts_voice": "ar-SA-male"
+    },
+    {
+      "id": "student",
+      "name": "الطالب",
+      "role": "تلميذ",
+      "card": "characters/student.json"
+    }
+  ],
+  "references": [],
+  "output": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "formats": [
+      "16:9"
+    ]
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "duration_seconds": 20,
+      "learning_goal": "مقدمة: أنَّ وكأنَّ",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "مَرْحَبًا! الْيَوْمَ: أنَّ وكأنَّ.",
+          "text_plain": "مرحبا! اليوم: أن وكأن.",
+          "start": 1.0,
+          "end": 6.0,
+          "id": "scene_01_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "أنَّ: بعد فعل. كأنَّ: للتشبيه.",
+          "text_plain": "أن: بعد فعل. كأن: للتشبيه.",
+          "start": 7.0,
+          "end": 14.0,
+          "id": "scene_01_02"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "أنَّ — كأنَّ",
+          "text_plain": "أن — كأن",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 20.0
+        }
+      ],
+      "hash": "0aa5a957dec0"
+    },
+    {
+      "id": "scene_02",
+      "duration_seconds": 35,
+      "learning_goal": "أنَّ — بعد فعل (مصدر مؤوّل)",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "أنَّ: تأتي بعد فعل. تُكوِّن مصدراً مؤوّلاً.",
+          "text_plain": "أن: تأتي بعد فعل. تُكوِّن مصدراً مؤوّلاً.",
+          "start": 1.0,
+          "end": 8.0,
+          "id": "scene_02_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "مِثال: عَلِمْتُ أنَّ الْعِلْمَ نَافِعٌ.",
+          "text_plain": "مثال: علمت أن العلم نافع.",
+          "start": 9.0,
+          "end": 16.0,
+          "id": "scene_02_02"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "الْعِلْمَ: اسم أنَّ (منصوب). نَافِعٌ: خبر (مرفوع).",
+          "text_plain": "العلم: اسم أن (منصوب). نافع: خبر (مرفوع).",
+          "start": 17.0,
+          "end": 26.0,
+          "id": "scene_02_03"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "مُهِمّ: لا تُفتتح بها الجملة. (علمتُ أنَّ...)",
+          "text_plain": "مهم: لا تُفتتح بها الجملة. (علمت أن...)",
+          "start": 27.0,
+          "end": 33.0,
+          "id": "scene_02_04"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "عَلِمْتُ أنَّ الْعِلْمَ نَافِعٌ",
+          "text_plain": "علمت أن العلم نافع",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 35.0
+        }
+      ],
+      "hash": "13f64582160b"
+    },
+    {
+      "id": "scene_03",
+      "duration_seconds": 35,
+      "learning_goal": "كأنَّ — للتشبيه",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "كأنَّ: للتشبيه. «كأنَّ كذا كذا».",
+          "text_plain": "كأن: للتشبيه. «كأن كذا كذا».",
+          "start": 1.0,
+          "end": 7.0,
+          "id": "scene_03_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "مِثال: كأنَّ الْقَمَرَ مِصْبَاحٌ.",
+          "text_plain": "مثال: كأن القمر مصباح.",
+          "start": 8.0,
+          "end": 14.0,
+          "id": "scene_03_02"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "الْقَمَرَ: اسم كأنَّ (منصوب). مِصْبَاحٌ: خبر (مرفوع).",
+          "text_plain": "القمر: اسم كأن (منصوب). مصباح: خبر (مرفوع).",
+          "start": 15.0,
+          "end": 24.0,
+          "id": "scene_03_03"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "كأنَّ الْقَمَرَ مِصْبَاحٌ",
+          "text_plain": "كأن القمر مصباح",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 35.0
+        }
+      ],
+      "hash": "92a992d371d9"
+    },
+    {
+      "id": "scene_04",
+      "duration_seconds": 30,
+      "learning_goal": "مقارنة: إنَّ، أنَّ، كأنَّ",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "إِنَّ: توكيد (إنَّ الطالبَ مجتهدٌ).",
+          "text_plain": "إن: توكيد (إن الطالبَ مجتهد).",
+          "start": 1.0,
+          "end": 7.0,
+          "id": "scene_04_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "أَنَّ: بعد فعل (علمتُ أنَّ العلمَ نافعٌ).",
+          "text_plain": "أن: بعد فعل (علمت أن العلمَ نافع).",
+          "start": 8.0,
+          "end": 15.0,
+          "id": "scene_04_02"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "كَأَنَّ: تشبيه (كأنَّ القمرَ مصباحٌ).",
+          "text_plain": "كأن: تشبيه (كأن القمرَ مصباح).",
+          "start": 16.0,
+          "end": 23.0,
+          "id": "scene_04_03"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "كلها: اسم منصوب، خبر مرفوع.",
+          "text_plain": "كلها: اسم منصوب، خبر مرفوع.",
+          "start": 24.0,
+          "end": 29.0,
+          "id": "scene_04_04"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "إِنَّ — أَنَّ — كَأَنَّ",
+          "text_plain": "إن — أن — كأن",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 30.0
+        }
+      ],
+      "hash": "fcb16c86560a"
+    },
+    {
+      "id": "scene_05",
+      "duration_seconds": 40,
+      "learning_goal": "تمرين: اختر الحرف المناسب",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "تَمْرِينٌ! اخْتَرِ الحرفَ المناسبَ.",
+          "text_plain": "تمرين! اختر الحرف المناسب.",
+          "start": 1.0,
+          "end": 5.0,
+          "id": "scene_05_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "١) عَلِمْتُ ___ الرِّيَاضَةَ مُفِيدَةٌ.",
+          "text_plain": "١) علمت ___ الرياضة مفيدة.",
+          "start": 6.0,
+          "end": 14.0,
+          "id": "scene_05_02"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "٢) ___ الْبَحْرَ هَادِئٌ.",
+          "text_plain": "٢) ___ البحر هادئ.",
+          "start": 15.0,
+          "end": 22.0,
+          "id": "scene_05_03"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "٣) ___ الطَّالِبَ مجتهدٌ (توكيد).",
+          "text_plain": "٣) ___ الطالبَ مجتهد (توكيد).",
+          "start": 23.0,
+          "end": 31.0,
+          "id": "scene_05_04"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "quiz",
+          "start": 1.0,
+          "end": 40.0,
+          "options": [
+            {
+              "text_diacritized": "أنَّ",
+              "text_plain": "أن"
+            },
+            {
+              "text_diacritized": "كأنَّ",
+              "text_plain": "كأن"
+            },
+            {
+              "text_diacritized": "إِنَّ",
+              "text_plain": "إن"
+            }
+          ],
+          "countdown_from": 5,
+          "reveal": 35,
+          "answer_index": 0,
+          "layout": "rows"
+        }
+      ],
+      "hash": "49184514298d"
+    },
+    {
+      "id": "scene_06",
+      "duration_seconds": 20,
+      "learning_goal": "ملخص",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "مُلَخَّصٌ: أنَّ (بعد فعل) وكأنَّ (تشبيه).",
+          "text_plain": "ملخص: أن (بعد فعل) وكأن (تشبيه).",
+          "start": 1.0,
+          "end": 8.0,
+          "id": "scene_06_01"
+        },
+        {
+          "character": "teacher",
+          "text_diacritized": "كلها: اسم منصوب، خبر مرفوع.",
+          "text_plain": "كلها: اسم منصوب، خبر مرفوع.",
+          "start": 9.0,
+          "end": 15.0,
+          "id": "scene_06_02"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "إِنَّ — أَنَّ — كَأَنَّ",
+          "text_plain": "إن — أن — كأن",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 20.0
+        }
+      ],
+      "hash": "1f4612bdf641"
+    },
+    {
+      "id": "scene_07",
+      "duration_seconds": 15,
+      "learning_goal": "الدرس القادم",
+      "background": "classroom",
+      "characters": [
+        "teacher"
+      ],
+      "dialogue": [
+        {
+          "character": "teacher",
+          "text_diacritized": "الدَّرْسُ القَادِمُ: لكنَّ، ليتَ، لعلَّ.",
+          "text_plain": "الدرس القادم: لكن، ليت، لعل.",
+          "start": 1.0,
+          "end": 6.0,
+          "id": "scene_07_01"
+        }
+      ],
+      "visuals": [
+        {
+          "type": "arabic_text",
+          "text_diacritized": "الدَّرْسُ القَادِمُ: لكنَّ، ليتَ، لعلَّ",
+          "text_plain": "الدرس القادم: لكن، ليت، لعل",
+          "direction": "rtl",
+          "start": 1.0,
+          "end": 15.0
+        }
+      ],
+      "hash": "4721916427bf"
+    }
+  ]
+}
