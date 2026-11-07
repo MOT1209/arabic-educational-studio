@@ -16,8 +16,16 @@ const opt = (k) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : un
 const inputProps = JSON.parse(fs.readFileSync(propsPath, 'utf8'));
 const here = path.dirname(fileURLToPath(import.meta.url));
 const browserExecutable = process.env.AES_CHROME || undefined;
+// src/Root.jsx registers one composition per aspect ratio (Lesson-16x9 and
+// friends), so the id has to come from the props the plan produced.
+const FORMAT_COMPOSITIONS = {'16:9': 'Lesson-16x9', '9:16': 'Lesson-9x16', '1:1': 'Lesson-1x1'};
+const compositionId = opt('--composition')
+  || FORMAT_COMPOSITIONS[inputProps.format]
+  || (inputProps.width === 1080 && inputProps.height === 1920 ? 'Lesson-9x16'
+    : inputProps.width === 1080 && inputProps.height === 1080 ? 'Lesson-1x1'
+    : 'Lesson-16x9');
 const serveUrl = await bundle({entryPoint: path.join(here, 'src', 'index.jsx'), publicDir: path.resolve(publicDir)});
-const composition = await selectComposition({serveUrl, id: 'Lesson', inputProps, browserExecutable});
+const composition = await selectComposition({serveUrl, id: compositionId, inputProps, browserExecutable});
 const chromiumOptions = {gl: 'swangle'};
 const still = opt('--still');
 if (still !== undefined) {

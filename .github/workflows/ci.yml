@@ -1,0 +1,225 @@
+# Monorepo CI for arabic-educational-studio.
+#
+# Each independent project in this repository is tested by its own job, because
+# each one has its own toolchain and its own lockfile:
+#
+#   arabic-educational-skills     Python + the Remotion engine (npm)
+#   tools/youtube-automation-agent  Node, npm ci / lint / test
+#   tools/youtube-agent-skill     Python skill scripts (no test suite yet)
+#   tools/elephant-goldfish-model Python unit tests + the Astro site
+#
+# There is no package.json at the repository root, so npm must never run there.
+# The final "CI" job fails unless every job succeeded, so a red matrix is
+# reported on one required check with per-project annotations.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  arabic-educational-skills:
+    name: Arabic Educational Skills (pytest)
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest jsonschema pyyaml pillow numpy
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: arabic-educational-skills/remotion/package-lock.json
+
+      - name: Install Remotion engine dependencies
+        working-directory: arabic-educational-skills/remotion
+        run: npm ci --no-audit --no-fund
+
+      - name: Ensure the headless browser Remotion renders with
+        working-directory: arabic-educational-skills/remotion
+        run: npx remotion browser ensure
+
+      - name: Run tests
+        working-directory: arabic-educational-skills
+        env:
+          AES_CHROME: ''
+        run: python -m pytest tests -q
+
+  youtube-automation-agent:
+    name: YouTube Automation Agent (npm ci, lint, test)
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: tools/youtube-automation-agent
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          # Matches this project's own engines and vendored workflow.
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: tools/youtube-automation-agent/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+        env:
+          # Tests must not depend on a developer's local .env file.
+          NODE_ENV: test
+
+  youtube-agent-skill:
+    name: YouTube Agent Skill (python syntax)
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: tools/youtube-agent-skill
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # These skills ship standalone CLI scripts and have no test suite yet.
+      # Byte-compiling is the check that actually holds today; segment tests are
+      # on the roadmap in PHASE1_AUDIT.md rather than pretended here.
+      - name: Byte-compile skill scripts
+        run: python -m compileall -q skills
+
+  elephant-goldfish-model:
+    name: Elephant Goldfish Model (pytest unit)
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: tools/elephant-goldfish-model
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          # TESTING.md: Node 22 is required for the offline scope-advisory
+          # workflow tests, which execute the workflow JavaScript.
+          node-version: '22'
+
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade "pip>=25.1"
+          python -m pip install --group test
+
+      - name: Run unit tests
+        run: python -m pytest tests/unit
+
+  elephant-goldfish-site:
+    name: Elephant Goldfish Model site (Astro)
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: tools/elephant-goldfish-model/site
+    env:
+      ASTRO_TELEMETRY_DISABLED: '1'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tools/elephant-goldfish-model/site/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Test
+        run: npm test
+
+      - name: Type and content check
+        run: npm run check
+
+      - name: Build
+        run: npm run build
+        env:
+          # Never emit a real analytics id from CI.
+          PUBLIC_GA_MEASUREMENT_ID: ''
+
+  ci:
+    name: CI
+    if: ${{ always() }}
+    needs:
+      - arabic-educational-skills
+      - youtube-automation-agent
+      - youtube-agent-skill
+      - elephant-goldfish-model
+      - elephant-goldfish-site
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require every project job to pass
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+          WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          node <<'JS'
+          const jobs = JSON.parse(process.env.NEEDS_JSON);
+          const failed = Object.entries(jobs).filter(([, job]) => job.result !== 'success');
+          for (const [name, job] of Object.entries(jobs)) {
+            const line = `${name}: ${job.result}`;
+            if (job.result === 'success') console.log(`ok   ${line}`);
+            else if (job.result === 'skipped') console.log(`::error title=${name} skipped::${name} did not run. Remove any condition that skips it.`);
+            else console.log(`::error title=${name} ${job.result}::${name} failed (${job.result}). Open the job log: ${process.env.WORKFLOW_URL}`);
+          }
+          if (failed.length) {
+            console.error(`\n${failed.length} project job(s) did not pass: ${failed.map(([name]) => name).join(', ')}`);
+            process.exitCode = 1;
+          }
+          JS
