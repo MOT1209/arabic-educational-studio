@@ -74,8 +74,15 @@ Not run locally:
 - PKCE and the fail-closed bind are not live-tested (they need a real Google
   consent round trip); the S256 pair itself is unit-tested.
 
-Hosted CI for this phase: recorded in the follow-up commit after this file was
-written (`PHASE5` run id goes in the commit message).
+Hosted CI for this phase:
+
+- Run [42473223557](https://github.com/MOT1209/arabic-educational-studio/actions/runs/42473223557)
+  (`f5a52d4`): six jobs green; `YouTube Automation Agent` failed because the
+  pre-existing bind test still asserted the unkeyed `HOST=0.0.0.0` override
+  that this phase removed.
+- Run [42474731314](https://github.com/MOT1209/arabic-educational-studio/actions/runs/42474731314)
+  (`1481f4c`): all seven jobs green after that test was rewritten to require
+  `API_KEY` for the override and to restore the previous key value.
 
 ## 5. Remaining risks and limits
 
