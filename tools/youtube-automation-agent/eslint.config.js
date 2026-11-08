@@ -33,6 +33,7 @@ module.exports = [
         fetch: 'readonly',
         FormData: 'readonly',
         localStorage: 'readonly',
+        sessionStorage: 'readonly',
         location: 'readonly',
         module: 'readonly',
         process: 'readonly',

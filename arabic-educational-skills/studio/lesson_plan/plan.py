@@ -12,6 +12,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 
 PLAN_VERSION = "1.0"
+# Version of the props object handed to remotion/render.mjs. Bump the major
+# part when a field changes meaning; render.mjs refuses unknown majors.
+PROPS_VERSION = "1.0"
 AGE_BANDS = ("preschool", "child", "preteen", "teen", "adult")
 # كلمات في الثانية للسرد (طبيعي، بطيء)
 WPS = {"preschool": (1.45, 0.75), "child": (1.7, 0.8), "preteen": (2.0, 1.0), "teen": (2.4, 1.3), "adult": (2.6, 1.5)}
@@ -343,7 +346,7 @@ def render_props(plan, fmt, audio_dir=None, captions=True):
     total = blocks[-1]["from"] + blocks[-1]["frames"] if blocks else FPS
     speaking = [[a["from"], a["from"] + a["frames"]] for a in audio] or \
                [[blk["from"] + s["from"], blk["from"] + s["to"] - 6] for blk in blocks for s in blk["segments"] if s["kind"] == "speech"]
-    return {"fps": FPS, "width": w, "height": h, "format": fmt, "durationInFrames": total,
+    return {"props_version": PROPS_VERSION, "fps": FPS, "width": w, "height": h, "format": fmt, "durationInFrames": total,
             "title": plan["title"], "theme": plan.get("style", {}).get("theme", "classroom"),
             "accent": plan.get("style", {}).get("accent"), "age_band": plan["audience"]["age_band"],
             "narrator": {"avatar": plan.get("narrator", {}).get("avatar", "letter_buddy"),

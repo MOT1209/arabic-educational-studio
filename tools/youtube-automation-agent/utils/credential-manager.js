@@ -107,6 +107,7 @@ class CredentialManager {
   }
 
   async authenticateYouTube() {
+    const { createPkcePair } = require('./pkce');
     const oauth2Client = new google.auth.OAuth2(
       this.credentials.youtube.client_id,
       this.credentials.youtube.client_secret,
@@ -115,15 +116,17 @@ class CredentialManager {
 
     const scopes = [
       'https://www.googleapis.com/auth/youtube.upload',
-      'https://www.googleapis.com/auth/youtube',
       'https://www.googleapis.com/auth/youtube.readonly',
       'https://www.googleapis.com/auth/yt-analytics.readonly',
       'https://www.googleapis.com/auth/youtube.force-ssl'
     ];
 
+    const pkce = createPkcePair();
     const authUrl = oauth2Client.generateAuthUrl({
       access_type: 'offline',
       scope: scopes,
+      code_challenge: pkce.challenge,
+      code_challenge_method: pkce.method
     });
 
     console.log(chalk.cyan('\n🔗 Please visit this URL to authorize the application:'));
@@ -138,7 +141,7 @@ class CredentialManager {
       }
     ]);
 
-    const { tokens } = await oauth2Client.getToken(code);
+    const { tokens } = await oauth2Client.getToken({ code, codeVerifier: pkce.verifier });
     oauth2Client.setCredentials(tokens);
 
     this.tokens.youtube = tokens;

@@ -3,6 +3,7 @@ const { google } = require('googleapis');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { createPkcePair } = require('./utils/pkce');
 
 function esc(v) { return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
 const chalk = require('chalk');
@@ -12,6 +13,7 @@ class OAuthServer {
     this.app = express();
     this.server = null;
     this.expectedState = null;
+    this.codeVerifier = null;
     this.setupRoutes();
   }
 
@@ -39,7 +41,7 @@ class OAuthServer {
 
       try {
         // Exchange code for tokens
-        await this.exchangeCodeForTokens(code);
+        await this.exchangeCodeForTokens(code, this.codeVerifier);
         
         res.send(`
           <h1>🎉 Authentication Successful!</h1>
@@ -91,7 +93,7 @@ class OAuthServer {
     return crypto.timingSafeEqual(Buffer.from(received), Buffer.from(expected));
   }
 
-  async exchangeCodeForTokens(code) {
+  async exchangeCodeForTokens(code, codeVerifier) {
     const credentialsPath = path.join(__dirname, 'config', 'credentials.json');
     const tokensPath = path.join(__dirname, 'config', 'tokens.json');
     
@@ -103,7 +105,7 @@ class OAuthServer {
       credentials.youtube.redirect_uris[0]
     );
 
-    const { tokens } = await oauth2Client.getToken(code);
+    const { tokens } = await oauth2Client.getToken({ code, codeVerifier });
     
     // Save tokens
     const tokenData = {
@@ -149,17 +151,20 @@ class OAuthServer {
 
     const scopes = [
       'https://www.googleapis.com/auth/youtube.upload',
-      'https://www.googleapis.com/auth/youtube',
       'https://www.googleapis.com/auth/youtube.readonly',
       'https://www.googleapis.com/auth/yt-analytics.readonly',
       'https://www.googleapis.com/auth/youtube.force-ssl'
     ];
 
+    const pkce = createPkcePair();
+    this.codeVerifier = pkce.verifier;
     const authUrl = oauth2Client.generateAuthUrl({
       access_type: 'offline',
       scope: scopes,
       prompt: 'consent',
-      state: this.createState()
+      state: this.createState(),
+      code_challenge: pkce.challenge,
+      code_challenge_method: pkce.method
     });
 
     console.log(chalk.cyan.bold('\n🎬 YouTube Automation Agent - OAuth Setup'));

@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const fs = require('fs').promises;
+const crypto = require('crypto');
 const { Logger } = require('./utils/logger');
 const { Database } = require('./database/db');
 const { CredentialManager } = require('./utils/credential-manager');
@@ -29,6 +30,14 @@ const { AITextService } = require('./utils/ai-text-service');
 const { DiscoverabilityService } = require('./utils/discoverability-service');
 const { version } = require('./package.json');
 const chalk = require('chalk');
+
+// Generated media is loaded by <img> tags, which cannot send an API key.
+// Those reads are the only API reads that stay open when a key is configured.
+function isPublicAssetRead(req) {
+  const target = req.originalUrl || req.path || '';
+  return req.method === 'GET'
+    && /^\/api\/content\/[^/]+\/(?:asset|scenes\/[^/]+\/asset|shorts\/[^/]+\/asset)(?:\/|$)/.test(target);
+}
 
 function isLoopbackHost(host) {
   return ['127.0.0.1', '::1', 'localhost'].includes(String(host).toLowerCase()) || /^127\./.test(String(host));
@@ -222,12 +231,35 @@ class YouTubeAutomationAgent {
         return next();
       }
 
-      if (req.get('x-api-key') !== process.env.API_KEY) {
+      // Thumbnails and scene stills are referenced from <img src>, which
+      // cannot send a header. They carry no mutation and stay readable.
+      if (isPublicAssetRead(req)) {
+        return next();
+      }
+
+      const received = req.get('x-api-key');
+      if (!received || !this.apiKeyMatches(received, process.env.API_KEY)) {
         return res.status(401).json({ success: false, error: 'Unauthorized' });
       }
 
       return next();
     };
+  }
+
+  // Hash both sides so a wrong-length guess cannot throw, and compare the
+  // digests in constant time.
+  apiKeyMatches(received, expected) {
+    const left = crypto.createHash('sha256').update(String(received)).digest();
+    const right = crypto.createHash('sha256').update(String(expected)).digest();
+    return crypto.timingSafeEqual(left, right);
+  }
+
+  // The dashboard may only leave loopback when the API is keyed.
+  bindSafetyError(host = process.env.HOST || '127.0.0.1', apiKey = process.env.API_KEY) {
+    if (!isLoopbackHost(host) && !apiKey) {
+      return `HOST=${host} exposes the dashboard to the network but API_KEY is not set; set API_KEY in .env or keep HOST=127.0.0.1.`;
+    }
+    return null;
   }
 
   validateGenerateRequestBody(body = {}) {
@@ -379,9 +411,12 @@ class YouTubeAutomationAgent {
   setupAPI() {
     this.app.use(express.json({ limit: '1mb' }));
     this.app.use(express.static(path.join(__dirname, 'dashboard')));
+    // Once API_KEY is set, JSON reads must present it too. Generated images
+    // are the exception because <img> cannot send a header.
+    this.app.use('/api', this.requireAPIKey());
 
     if (!process.env.API_KEY) {
-      this.logger.warn('API_KEY is not set; mutating API routes are unprotected');
+      this.logger.warn('API_KEY is not set; API routes are unprotected (loopback only)');
     }
     
     // Main dashboard route
@@ -1853,11 +1888,13 @@ class YouTubeAutomationAgent {
     // Loopback by default: mutating routes are open whenever API_KEY is unset,
     // so the dashboard must not be reachable from the network unless asked.
     const HOST = process.env.HOST || '127.0.0.1';
+    const safetyError = this.bindSafetyError(HOST);
+    if (safetyError) {
+      console.error(chalk.red(`\n❌ ${safetyError}`));
+      process.exit(1);
+    }
     this.app.listen(PORT, HOST, () => {
       console.log(chalk.green(`\n✅ YouTube Automation Agent running on ${HOST}:${PORT}`));
-      if (!isLoopbackHost(HOST) && !process.env.API_KEY) {
-        console.log(chalk.yellow(`⚠️  HOST=${HOST} exposes the dashboard to your network without API_KEY. Set API_KEY in .env to protect generation, approval, and publishing routes.`));
-      }
       console.log(chalk.gray('─'.repeat(50)));
       console.log(chalk.white('📊 Dashboard: ') + chalk.cyan(`http://localhost:${PORT}`));
       console.log(chalk.white('🔧 API Health: ') + chalk.cyan(`http://localhost:${PORT}/health`));

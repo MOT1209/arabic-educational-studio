@@ -1,4 +1,4 @@
-const { execFile } = require('child_process');
+const { execFile, execFileSync } = require('child_process');
 const fs = require('fs');
 const { promisify } = require('util');
 
@@ -9,7 +9,7 @@ let cachedPath = null;
 /**
  * Resolve the FFmpeg binary to use, in order of preference:
  * 1. FFMPEG_PATH environment variable
- * 2. Bundled binary from the optional ffmpeg-static package
+ * 2. Bundled binary from the optional ffmpeg-static package (verified working)
  * 3. `ffmpeg` on the system PATH
  */
 function getFFmpegPath() {
@@ -22,13 +22,24 @@ function getFFmpegPath() {
     return cachedPath;
   }
 
+  // Try the bundled binary first, but verify it actually runs
   try {
-    cachedPath = require('ffmpeg-static');
+    const bundled = require('ffmpeg-static');
+    if (bundled && fs.existsSync(bundled)) {
+      try {
+        execFileSync(bundled, ['-version'], { stdio: 'ignore', timeout: 5000 });
+        cachedPath = bundled;
+        return cachedPath;
+      } catch (_e) {
+        // Bundled binary is broken (e.g. EFTYPE on Windows); fall through to system
+      }
+    }
   } catch (error) {
-    cachedPath = null;
+    // ffmpeg-static not installed
   }
 
-  cachedPath = cachedPath || 'ffmpeg';
+  // Fall back to system ffmpeg on PATH
+  cachedPath = 'ffmpeg';
   return cachedPath;
 }
 

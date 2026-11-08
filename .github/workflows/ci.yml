@@ -47,7 +47,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pytest jsonschema pillow numpy
+          python -m pip install -r arabic-educational-skills/requirements-dev.txt
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -131,6 +131,9 @@ jobs:
       - name: Byte-compile skill scripts
         run: python -m compileall -q skills
 
+      - name: Run tool smoke tests
+        run: python -m unittest discover -s tests -v
+
   elephant-goldfish-model:
     name: Elephant Goldfish Model (pytest unit)
     runs-on: ubuntu-24.04
@@ -199,6 +202,39 @@ jobs:
           # Never emit a real analytics id from CI.
           PUBLIC_GA_MEASUREMENT_ID: ''
 
+  skill-mirror:
+    name: Skill mirrors (.claude/skills)
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Compare mirrors against their sources
+        run: |
+          status=0
+          for source in tools/youtube-agent-skill/skills/* tools/elephant-goldfish-model/skills/*; do
+            name=$(basename "$source")
+            mirror=".claude/skills/$name"
+            if [ ! -d "$mirror" ]; then
+              echo "::error::$mirror is missing; copy $source into .claude/skills/"
+              status=1
+              continue
+            fi
+            if ! diff -rq --exclude=__pycache__ "$source" "$mirror"; then
+              echo "::error::$name differs between $source and $mirror"
+              status=1
+            fi
+          done
+          expected=$(ls -d tools/*/skills/*/ | wc -l)
+          actual=$(ls -d .claude/skills/*/ | wc -l)
+          if [ "$expected" -ne "$actual" ]; then
+            echo "::error::.claude/skills holds $actual directories but the tools hold $expected skills"
+            status=1
+          fi
+          exit $status
+
   ci:
     name: CI
     if: ${{ always() }}
@@ -208,6 +244,7 @@ jobs:
       - youtube-agent-skill
       - elephant-goldfish-model
       - elephant-goldfish-site
+      - skill-mirror
     runs-on: ubuntu-24.04
     steps:
       - name: Require every project job to pass

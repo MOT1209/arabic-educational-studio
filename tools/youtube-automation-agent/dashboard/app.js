@@ -21,12 +21,12 @@ function escapeHTML(value) {
 }
 
 function apiKey() {
-  return localStorage.getItem('yaa_api_key') || '';
+  return sessionStorage.getItem('yaa_api_key') || '';
 }
 
 function requestApiKey() {
   const key = prompt('أدخل قيمة API_KEY من ملف .env. تُحفظ في هذا المتصفح فقط.', apiKey());
-  if (key !== null) localStorage.setItem('yaa_api_key', key.trim());
+  if (key !== null) sessionStorage.setItem('yaa_api_key', key.trim());
   return key;
 }
 

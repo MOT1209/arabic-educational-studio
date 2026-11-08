@@ -2533,6 +2533,36 @@ class SystemTest {
       throw new Error('Valid API key was not accepted');
     }
 
+    const readMiddleware = agent.requireAPIKey();
+    const guardedRead = this.createMockResponse();
+    let guardedNext = false;
+    readMiddleware({ method: 'GET', originalUrl: '/api/dashboard', get: () => '' }, guardedRead, () => { guardedNext = true; });
+    if (guardedNext || guardedRead.statusCode !== 401) {
+      throw new Error('API reads were not protected while API_KEY is set');
+    }
+
+    const assetRead = this.createMockResponse();
+    let assetNext = false;
+    readMiddleware({ method: 'GET', originalUrl: '/api/content/p1/asset/thumbnail', get: () => '' }, assetRead, () => { assetNext = true; });
+    if (!assetNext) {
+      throw new Error('Generated-image reads must stay available to <img> tags');
+    }
+
+    if (!agent.bindSafetyError('0.0.0.0', '')) {
+      throw new Error('A non-loopback bind without API_KEY must be refused');
+    }
+    if (agent.bindSafetyError('0.0.0.0', 'secret') || agent.bindSafetyError('127.0.0.1', '')) {
+      throw new Error('A safe bind was refused');
+    }
+
+    const { createPkcePair } = require('./utils/pkce');
+    const cryptoModule = require('crypto');
+    const pkce = createPkcePair();
+    const challenge = cryptoModule.createHash('sha256').update(pkce.verifier).digest('base64url');
+    if (pkce.method !== 'S256' || pkce.challenge !== challenge || pkce.verifier === createPkcePair().verifier) {
+      throw new Error('PKCE pair is not a unique S256 challenge');
+    }
+
     if (previousKey === undefined) {
       delete process.env.API_KEY;
     } else {
@@ -3868,7 +3898,9 @@ class SystemTest {
     // Passing the CredentialManager itself leaves the engagement studio permanently
     // in fallback mode on installs with no provider environment variables.
     const savedEnv = process.env.OPENAI_API_KEY;
+    const savedGemini = process.env.GEMINI_API_KEY;
     delete process.env.OPENAI_API_KEY;
+    delete process.env.GEMINI_API_KEY;
     try {
       const configured = new AITextService({
         aiProvider: { provider: 'openai', apiKey: 'test-key', model: 'gpt-6.1-sol' }
@@ -3886,6 +3918,8 @@ class SystemTest {
     } finally {
       if (savedEnv === undefined) delete process.env.OPENAI_API_KEY;
       else process.env.OPENAI_API_KEY = savedEnv;
+      if (savedGemini === undefined) delete process.env.GEMINI_API_KEY;
+      else process.env.GEMINI_API_KEY = savedGemini;
     }
   }
 

@@ -13,7 +13,12 @@ if (!propsPath || !out || !publicDir) {
   process.exit(2);
 }
 const opt = (k) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : undefined; };
+const PROPS_MAJOR = '1';
 const inputProps = JSON.parse(fs.readFileSync(propsPath, 'utf8'));
+if (inputProps.props_version && String(inputProps.props_version).split('.')[0] !== PROPS_MAJOR) {
+  console.error(`unsupported props_version ${inputProps.props_version}; this renderer implements ${PROPS_MAJOR}.x`);
+  process.exit(2);
+}
 const here = path.dirname(fileURLToPath(import.meta.url));
 const browserExecutable = process.env.AES_CHROME || undefined;
 // src/Root.jsx registers one composition per aspect ratio (Lesson-16x9 and

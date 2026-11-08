@@ -85,7 +85,7 @@ winget install Gyan.FFmpeg
 ### 3) Python dependencies
 
 ```bash
-python -m pip install pytest jsonschema pyyaml pillow numpy
+python -m pip install -r arabic-educational-skills/requirements-dev.txt
 ```
 
 `jsonschema` is optional: without it `validate_script.py` falls back to the built-in validator in `studio/core/schema.py`.

@@ -1,0 +1,8 @@
+# Test dependencies for the studio and the skill scripts.
+# Installed by the arabic-educational-skills CI job and by anyone running
+# `python -m pytest tests -q`. jsonschema, Pillow and numpy are optional at
+# runtime; the suite exercises them when present.
+pytest>=8.0,<9
+jsonschema>=4.18,<5
+pillow>=10.0
+numpy>=1.26

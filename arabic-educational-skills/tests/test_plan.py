@@ -105,6 +105,7 @@ def test_render_props_and_listening_caption_hidden():
     p = lesson_to_plan(build_letter_lesson("ب", profile="preschool"))
     for fmt, (w, h) in P.FORMATS.items():
         pr = P.render_props(p, fmt)
+        assert pr["props_version"] == "1.0"
         assert (pr["width"], pr["height"]) == (w, h)
         assert pr["durationInFrames"] == pr["blocks"][-1]["from"] + pr["blocks"][-1]["frames"]
     pr = P.render_props(p, "9:16")

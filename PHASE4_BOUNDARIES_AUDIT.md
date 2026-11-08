@@ -7,8 +7,9 @@ repository was consulted. No `.env` or credential file contents were read — on
 variable names and counts.
 
 The deliverable is a boundary map, an overlap analysis, and six contracts
-(C1–C6) plus one explicitly missing contract (C7). Ten defects were found; three
-were fixed in this phase and the rest need a decision or a change outside it.
+(C1–C6) plus one explicitly missing contract (C7). Ten defects were found;
+three were fixed in this phase and the remaining seven in Phase 5 (see
+`PHASE5_FINAL_AUDIT.md`).
 
 ## 1. Boundary map
 
@@ -107,9 +108,11 @@ a workspace, which the repository deliberately does not have.
   `index.js`; loopback by default.
 - **Health**: `GET /health` is unauthenticated and returns
   `{status: "healthy"|"setup_required", version, initialized, setupRequired, agents[], uptime, timestamp}`.
-- **Auth**: when `API_KEY` is set, mutating routes require the `x-api-key` header;
-  a mismatch returns `401 {success:false, error:"Unauthorized"}`. When `API_KEY`
-  is unset the guard passes through — documented debt from Phase 2 (D10).
+- **Auth**: when `API_KEY` is set, mutating and JSON read routes require the
+  `x-api-key` header; comparison is constant-time over SHA-256 digests, and a
+  mismatch returns `401 {success:false, error:"Unauthorized"}`. When `API_KEY`
+  is unset, loopback stays open; a non-loopback `HOST` without a key refuses to
+  start. Generated-image reads are exempt because `<img>` cannot send a header.
 - **Storage**: `data/` (SQLite `youtube_automation.db`), `uploads/`, `logs/`,
   `config/credentials.json` at mode `0600`. All local and git-ignored.
 - **Environment**: `tools/youtube-automation-agent/.env.example` is the single
@@ -126,7 +129,8 @@ a workspace, which the repository deliberately does not have.
 - **Mirror**: `.claude/skills/<name>` must stay byte-identical to
   `tools/*/skills/<name>`. EGM mirrors test fixtures (`TEST.md`,
   `test_scenarios.yaml`) too; YAS mirrors exclude only untracked `__pycache__/`.
-  There is no automated drift check (D8); edit the source, then copy.
+  The `skill-mirror` CI job enforces the comparison (D8); edit the source, then
+  copy.
 
 ### C5 — EGM packaging (release artifacts)
 
@@ -141,7 +145,7 @@ a workspace, which the repository deliberately does not have.
 
 ### C6 — Repository CI
 
-- Five project jobs plus the `ci` gate; the gate fails on any non-`success`
+- Six project jobs plus the `ci` gate; the gate fails on any non-`success`
   result, including `skipped`. Each job sets its own `working-directory`.
 - Four lockfiles exist (`remotion/`, YTA, EGM `site/`, EGM `opencode-ci/`); CI
   installs with `npm ci` only from those directories.
@@ -169,15 +173,15 @@ That is a new feature and is out of scope for this phase.
 | ID | Defect | Evidence | Status |
 | --- | --- | --- | --- |
 | D1 | `ELEVENLABS_TTS_MODEL` is read by `utils/ai-video-generator.js` but absent from `.env.example` (the declared SSoT) | env-drift scan: 64 used, 85 declared, 1 missing | **Fixed** — documented as an optional override, default `eleven_v3` |
-| D2 | `arabic-educational-skills` has no Python dependency manifest; its test dependencies exist only in the CI command, unpinned | no `requirements*.txt`/`pyproject.toml`; CI installs inline | Open — a `requirements-dev.txt` plus a CI `-r` would remove the drift, but it changes the install flow |
+| D2 | `arabic-educational-skills` has no Python dependency manifest; its test dependencies exist only in the CI command, unpinned | no `requirements*.txt`/`pyproject.toml`; CI installs inline | **Fixed (Phase 5)** — `requirements-dev.txt` added; CI and all three READMEs install from it |
 | D3 | AES CI installed `pyyaml`, which no AES Python file imports | `grep -rn "yaml" arabic-educational-skills --include=*.py` → no matches | **Fixed** — removed from the CI install |
 | D4 | `tools/README.md` claimed the tools' `node_modules` were installed and `.env` created, and told readers to update with `git pull` from a directory with no `.git` | file content vs `find tools -name .git` and the real tree | **Fixed** — rewritten as a boundary map |
-| D5 | The Remotion props JSON has no version field; only `PLAN_VERSION` gates the plan | `plan.render_props()` output keys | Open — touches both sides of C1 |
-| D6 | Two deliverable trees with conflicting ignore rules: `youtube/*.mp4` are tracked despite `*.mp4`; `projects/project-01-inna/exports/scene_01.mp4` is tracked despite `**/exports/` | `git ls-files` | Open — these are user artifacts; deleting or un-tracking needs a decision |
-| D7 | Empty legacy directories `TIK TOK/` and `YOU TUBE/shorts y` remain from the pre-`projects/` layout | `find` shows no files; `git ls-files` shows none | Open — deletion needs a decision |
-| D8 | `.claude/skills/` mirror can drift silently; no CI check compares it with `tools/*/skills/` | manual `diff -rq` passes today | Open — a CI diff job is the fix |
-| D9 | YAS has no test suite; CI only byte-compiles `skills/` | `ci.yml` `youtube-agent-skill` job | Open — recorded, not pretended |
-| D10 | YTA auth fails open when `API_KEY` is unset, and several `GET /api/*` routes are unauthenticated | `index.js::requireAPIKey()`; route table | Open from Phase 2 — needs the `test.js` assertion updated with the behavior change |
+| D5 | The Remotion props JSON has no version field; only `PLAN_VERSION` gates the plan | `plan.render_props()` output keys | **Fixed (Phase 5)** — `props_version: "1.0"` in the props; `render.mjs` refuses an unknown major with exit 2, covered by `test_plan.py` |
+| D6 | Two deliverable trees with conflicting ignore rules: `youtube/*.mp4` are tracked despite `*.mp4`; `projects/project-01-inna/exports/scene_01.mp4` is tracked despite `**/exports/` | `git ls-files` | **Fixed (Phase 5)** — the four mp4s are untracked (`git rm --cached`); the files remain on disk |
+| D7 | Empty legacy directories `TIK TOK/` and `YOU TUBE/shorts y` remain from the pre-`projects/` layout | `find` shows no files; `git ls-files` shows none | **Fixed (Phase 5)** — both empty trees removed (they held no tracked files) |
+| D8 | `.claude/skills/` mirror can drift silently; no CI check compares it with `tools/*/skills/` | manual `diff -rq` passes today | **Fixed (Phase 5)** — `skill-mirror` CI job diffs each mirror and its source, and checks the directory count |
+| D9 | YAS has no test suite; CI only byte-compiles `skills/` | `ci.yml` `youtube-agent-skill` job | **Fixed (Phase 5)** — stdlib `unittest` smoke tests for all six tools, run in CI |
+| D10 | YTA auth fails open when `API_KEY` is unset, and several `GET /api/*` routes are unauthenticated | `index.js::requireAPIKey()`; route table | **Fixed (Phase 5)** — boot refuses a non-loopback bind without a key, all `/api` reads are protected when a key is set, comparison is constant-time, and `test.js` asserts all of it |
 
 ## 6. Verification (actual output)
 
@@ -205,11 +209,15 @@ Not run: local full test suites (the Windows/Node environment cannot complete
 `npm ci` for YTA, and the AES suite exceeds five minutes locally). CI is the
 arbiter; it must run after this phase is pushed.
 
-## 7. Decisions left open
+## 7. Decisions resolved in Phase 5
 
-1. D2: add `requirements-dev.txt` for AES and have CI install from it.
-2. D5: version the Remotion props object (e.g. `"props_version": "1.0"`) and
-   reject unknown major versions in `render.mjs`.
-3. D6/D7: untrack the stray mp4s and delete the two empty legacy directories.
-4. D8: add a CI job that diffs `.claude/skills/` against `tools/*/skills/`.
-5. D10: close the Phase 2 auth findings (fail-open `API_KEY`, unauthenticated GETs).
+1. D2 — `requirements-dev.txt` added; CI and the READMEs install from it.
+2. D5 — the props object carries `props_version`, and `render.mjs` rejects an
+   unknown major.
+3. D6/D7 — the stray mp4s are untracked (kept on disk) and both empty legacy
+   directories were removed.
+4. D8 — the `skill-mirror` CI job enforces the mirror.
+5. D10 — the auth findings from Phase 2 are closed: fail-closed binding,
+   protected reads, constant-time comparison (see `PHASE5_FINAL_AUDIT.md`).
+
+Remaining limits are recorded in `PHASE5_FINAL_AUDIT.md` rather than here.

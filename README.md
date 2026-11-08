@@ -77,7 +77,7 @@ winget install Gyan.FFmpeg
 ### 3) اعتماديات Python
 
 ```bash
-python -m pip install pytest jsonschema pyyaml pillow numpy
+python -m pip install -r arabic-educational-skills/requirements-dev.txt
 ```
 
 `jsonschema` اختياري: عند غيابه يستخدم `validate_script.py` المدقق المدمج في `studio/core/schema.py`.

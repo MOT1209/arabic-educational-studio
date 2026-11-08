@@ -4,6 +4,7 @@ const path = require('path');
 const chalk = require('chalk');
 const http = require('http');
 const crypto = require('crypto');
+const { createPkcePair } = require('./utils/pkce');
 const { URL } = require('url');
 function esc(v) { return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
 
@@ -13,6 +14,7 @@ class ModernAuth {
     this.tokensPath = path.join(__dirname, 'config', 'tokens.json');
     this.server = null;
     this.expectedState = null;
+    this.codeVerifier = null;
   }
 
   async authenticate() {
@@ -33,7 +35,6 @@ class ModernAuth {
 
       const scopes = [
         'https://www.googleapis.com/auth/youtube.upload',
-        'https://www.googleapis.com/auth/youtube',
         'https://www.googleapis.com/auth/youtube.readonly',
         'https://www.googleapis.com/auth/yt-analytics.readonly',
         'https://www.googleapis.com/auth/youtube.force-ssl'
@@ -54,11 +55,17 @@ class ModernAuth {
       // Generate auth URL. The state value ties the callback to this process:
       // anything else that reaches the loopback port is refused.
       const state = this.createState();
+      // PKCE ties the code to this process even if another local process
+      // observes the loopback callback.
+      const pkce = createPkcePair();
+      this.codeVerifier = pkce.verifier;
       const authUrl = oauth2Client.generateAuthUrl({
         access_type: 'offline',
         scope: scopes,
         prompt: 'consent',
-        state
+        state,
+        code_challenge: pkce.challenge,
+        code_challenge_method: pkce.method
       });
 
       console.log(chalk.cyan('🔗 Please visit this URL to authorize:'));
@@ -175,12 +182,13 @@ class ModernAuth {
         
         if (code) {
           try {
-            const { tokens } = await oauth2Client.getToken(code);
+            const { tokens } = await oauth2Client.getToken({ code, codeVerifier: this.codeVerifier });
             
             // Save tokens
             const tokenData = { youtube: tokens };
             fs.writeFileSync(this.tokensPath, JSON.stringify(tokenData, null, 2), { mode: 0o600 });
             fs.chmodSync(this.tokensPath, 0o600);
+            this.codeVerifier = null;
             
             res.writeHead(200, { 'Content-Type': 'text/html' });
             res.end(`
@@ -229,6 +237,7 @@ class ModernAuth {
   }
   
   cleanup() {
+    this.codeVerifier = null;
     if (this.authTimeout) {
       clearTimeout(this.authTimeout);
       this.authTimeout = null;
