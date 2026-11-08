@@ -1,4 +1,4 @@
-"""Smoke tests for the eleven yt-* skills' Python tools.
+"""Smoke tests for the six yt-* skills that ship a Python tool.
 
 The tools are documented as dependency-free and run from their skill folder.
 These tests prove that each entry point starts, prints usage instead of a

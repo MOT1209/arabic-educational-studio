@@ -34,9 +34,11 @@ const chalk = require('chalk');
 // Generated media is loaded by <img> tags, which cannot send an API key.
 // Those reads are the only API reads that stay open when a key is configured.
 function isPublicAssetRead(req) {
-  const target = req.originalUrl || req.path || '';
+  // req.path drops the query string and is the same string the router matches on,
+  // so a cache-busting parameter cannot turn a valid image into a 401.
+  const target = req.path || '';
   return req.method === 'GET'
-    && /^\/api\/content\/[^/]+\/(?:asset|scenes\/[^/]+\/asset|shorts\/[^/]+\/asset)(?:\/|$)/.test(target);
+    && /^\/api\/content\/[^/]+\/(?:asset|scenes\/[^/]+\/asset|shorts\/[^/]+\/asset)\/[^/]+$/.test(target);
 }
 
 function isLoopbackHost(host) {
@@ -457,7 +459,7 @@ class YouTubeAutomationAgent {
     });
 
     // Get analytics
-    this.app.get('/analytics', async (req, res) => {
+    this.app.get('/analytics', this.requireAPIKey(), async (req, res) => {
       try {
         if (!this.agents.analytics) return res.json({ totalVideos: 0, averagePerformanceScore: 0, topPerformers: [], insights: [], learning: null });
         const analytics = await this.agents.analytics.getRecentAnalytics();
@@ -492,7 +494,7 @@ class YouTubeAutomationAgent {
     });
 
     // Get upcoming schedule
-    this.app.get('/schedule', async (req, res) => {
+    this.app.get('/schedule', this.requireAPIKey(), async (req, res) => {
       try {
         const schedule = await this.db.getUpcomingSchedule();
         res.json(schedule);

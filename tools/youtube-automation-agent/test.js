@@ -2544,16 +2544,32 @@ class SystemTest {
     const readMiddleware = agent.requireAPIKey();
     const guardedRead = this.createMockResponse();
     let guardedNext = false;
-    readMiddleware({ method: 'GET', originalUrl: '/api/dashboard', get: () => '' }, guardedRead, () => { guardedNext = true; });
+    readMiddleware({ method: 'GET', path: '/api/dashboard', originalUrl: '/api/dashboard', get: () => '' }, guardedRead, () => { guardedNext = true; });
     if (guardedNext || guardedRead.statusCode !== 401) {
       throw new Error('API reads were not protected while API_KEY is set');
     }
 
     const assetRead = this.createMockResponse();
     let assetNext = false;
-    readMiddleware({ method: 'GET', originalUrl: '/api/content/p1/asset/thumbnail', get: () => '' }, assetRead, () => { assetNext = true; });
+    readMiddleware({ method: 'GET', path: '/api/content/p1/asset/thumbnail', originalUrl: '/api/content/p1/asset/thumbnail', get: () => '' }, assetRead, () => { assetNext = true; });
     if (!assetNext) {
       throw new Error('Generated-image reads must stay available to <img> tags');
+    }
+
+    // A query string must not close the image route, and the exemption must stop
+    // at the asset kind instead of covering every path below it.
+    const cachedAsset = this.createMockResponse();
+    let cachedAssetNext = false;
+    readMiddleware({ method: 'GET', path: '/api/content/p1/asset/thumbnail', originalUrl: '/api/content/p1/asset/thumbnail?v=2', get: () => '' }, cachedAsset, () => { cachedAssetNext = true; });
+    if (!cachedAssetNext) {
+      throw new Error('A generated-image read with a query string was rejected');
+    }
+
+    const nestedAssetPath = this.createMockResponse();
+    let nestedNext = false;
+    readMiddleware({ method: 'GET', path: '/api/content/p1/asset/thumbnail/metadata', originalUrl: '/api/content/p1/asset/thumbnail/metadata', get: () => '' }, nestedAssetPath, () => { nestedNext = true; });
+    if (nestedNext || nestedAssetPath.statusCode !== 401) {
+      throw new Error('A path below the asset kind inherited the public image exemption');
     }
 
     if (!agent.bindSafetyError('0.0.0.0', '')) {

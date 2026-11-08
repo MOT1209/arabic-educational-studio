@@ -216,6 +216,11 @@ jobs:
           status=0
           for source in tools/youtube-agent-skill/skills/* tools/elephant-goldfish-model/skills/*; do
             name=$(basename "$source")
+            if [ ! -d "$source" ]; then
+              echo "::error::$source is not a skill directory; the mirror check has nothing to compare"
+              status=1
+              continue
+            fi
             mirror=".claude/skills/$name"
             if [ ! -d "$mirror" ]; then
               echo "::error::$mirror is missing; copy $source into .claude/skills/"
@@ -227,8 +232,8 @@ jobs:
               status=1
             fi
           done
-          expected=$(ls -d tools/*/skills/*/ | wc -l)
-          actual=$(ls -d .claude/skills/*/ | wc -l)
+          expected=$(find tools -mindepth 4 -maxdepth 4 -type d -path 'tools/*/skills/*' | wc -l)
+          actual=$(find .claude/skills -mindepth 1 -maxdepth 1 -type d | wc -l)
           if [ "$expected" -ne "$actual" ]; then
             echo "::error::.claude/skills holds $actual directories but the tools hold $expected skills"
             status=1

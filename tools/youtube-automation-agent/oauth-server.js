@@ -40,8 +40,10 @@ class OAuthServer {
       }
 
       try {
-        // Exchange code for tokens
-        await this.exchangeCodeForTokens(code, this.codeVerifier);
+        // Exchange code for tokens; drop the verifier even if the exchange fails.
+        const codeVerifier = this.codeVerifier;
+        this.codeVerifier = null;
+        await this.exchangeCodeForTokens(code, codeVerifier);
         
         res.send(`
           <h1>🎉 Authentication Successful!</h1>
