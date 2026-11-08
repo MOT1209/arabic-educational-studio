@@ -232,7 +232,7 @@ jobs:
               status=1
             fi
           done
-          expected=$(find tools -mindepth 4 -maxdepth 4 -type d -path 'tools/*/skills/*' | wc -l)
+          expected=$(find tools -mindepth 3 -maxdepth 3 -type d -path 'tools/*/skills/*' | wc -l)
           actual=$(find .claude/skills -mindepth 1 -maxdepth 1 -type d | wc -l)
           if [ "$expected" -ne "$actual" ]; then
             echo "::error::.claude/skills holds $actual directories but the tools hold $expected skills"
