@@ -90,6 +90,12 @@ jobs:
           cache: npm
           cache-dependency-path: tools/youtube-automation-agent/package-lock.json
 
+      - name: Install ffmpeg
+        # The suite shells out to ffmpeg. The optional ffmpeg-static download is
+        # not reliable on a fresh runner, and utils/ffmpeg.js then falls back to
+        # `ffmpeg` on PATH, so provide the system binary as well.
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 

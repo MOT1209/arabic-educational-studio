@@ -241,6 +241,14 @@ token-mode test, so it ran on the Ubuntu runner but not on Windows.
 - CI output shows `DEP0169: url.parse() … prone to errors that have security
   implications` from a dependency, not from repository code. Worth resolving
   with the dependency work in Phase 4.
+- Hosted run [42465229385](https://github.com/MOT1209/arabic-educational-studio/actions/runs/42465229385)
+  turned red on a docs-only commit: the `youtube-automation-agent` job failed in
+  `Shorts Repurposing Studio` with `spawn ffmpeg ENOENT`, minutes after the same
+  code passed. `ffmpeg-static` is an optional dependency whose binary download
+  is not reliable on a fresh runner, and `utils/ffmpeg.js` then falls back to
+  `ffmpeg` on PATH — which that job never installed. The job now installs ffmpeg
+  from apt, as the Arabic Educational Skills job already did. Not a security
+  defect, recorded here because it made the pipeline red without a code change.
 
 ## 7. Summary
 
