@@ -101,5 +101,8 @@ Hosted CI for this phase:
    round trip.
 5. **YTA dependency health**: the local install is broken (sharp `EPERM`); CI's
    clean `npm ci` is the only proof the dependency set installs.
-6. **Publishing handoff (C7)** is still manual and unversioned. No feature was
-   invented for it in this phase.
+6. **Publishing handoff (C7)**: `render()` now writes a versioned sidecar
+   (`<slug>-<fmt>.json`, `sidecar_version: "1.0"`, validated by
+   `plan.check_sidecar()`) beside each video. The copy into `youtube/` or
+   `tiktok/` is still manual, and description/tags/disclosure remain in the
+   hand-written metadata files.

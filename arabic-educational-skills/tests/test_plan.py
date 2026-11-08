@@ -118,6 +118,36 @@ def test_render_props_and_listening_caption_hidden():
     assert srt.startswith("1\n00:00:")
 
 
+def test_sidecar_contract():
+    """بطاقة التسليم (C7): إصدار مُتحقَّق، أسماء ملفات محلية، ورفض نقص الإصدار أو عدم تطابق الاسم."""
+    p = _p("inna")
+    name = p.get("slug") or "lesson"
+    doc = P.sidecar(p, "16:9", f"/tmp/{name}-16x9.mp4", f"/tmp/{name}-16x9.srt",
+                    seconds=42.5, has_audio=True, technical_check="passed")
+    assert doc["sidecar_version"] == P.SIDECAR_VERSION
+    assert doc["subtitles"] == f"{name}-16x9.srt"
+    assert (doc["width"], doc["height"]) == P.FORMATS["16:9"]
+    assert P.check_sidecar(doc) == []
+    assert any("غير مدعوم" in e for e in P.check_sidecar(dict(doc, sidecar_version="2.0")))
+    assert any("مفقود" in e for e in P.check_sidecar({k: v for k, v in doc.items() if k != "sidecar_version"}))
+    assert any("يطابق" in e for e in P.check_sidecar(dict(doc, video="other.mp4")))
+    assert any("اسم ملف" in e for e in P.check_sidecar(dict(doc, video=f"/abs/{name}-16x9.mp4")))
+
+
+def test_render_writes_sidecar_next_to_video(tmp_path, monkeypatch):
+    """التصيير نفسه يكتب البطاقة؛ node مُستبدل كي لا يحتاج الاختبار محرك Remotion."""
+    from studio.lesson_plan import render as R
+    p = _p("inna")
+    p["blocks"], p["formats"] = p["blocks"][:2], ["16:9"]
+    monkeypatch.setattr(R, "run_node", lambda pj, mp4, pub, **k: Path(mp4).write_bytes(b"x") and "")
+    item = R.render(p, tmp_path, check=False)["outputs"][0]
+    side = Path(item["sidecar"])
+    assert side.name == f"{p.get('slug') or 'lesson'}-16x9.json" and side.parent == Path(item["video"]).parent
+    doc = json.loads(side.read_text("utf-8"))
+    assert P.check_sidecar(doc) == []
+    assert doc["video"] == Path(item["video"]).name and doc["seconds"] == item["seconds"]
+
+
 def test_letter_lesson_to_plan_every_letter():
     from studio.systems.arabic_language import letters as L
     for letter in L.LETTER_ORDER:

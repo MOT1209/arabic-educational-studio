@@ -153,20 +153,27 @@ a workspace, which the repository deliberately does not have.
   new entry in the `ci` job's `needs`, a `.gitignore` rule for its outputs, and a
   README row. No root-level `npm install` is ever valid.
 
-### C7 — AES → publishing (missing; do not assume it exists)
+### C7 — AES → publishing (versioned sidecar; the copy is still manual)
 
-Today the handoff is manual and unversioned:
+`render()` writes `<out>/<slug>-<fmt>.json` beside each video ("the sidecar"),
+produced by `plan.sidecar()` and validated by `plan.check_sidecar()` before it is
+written — an invalid card raises instead of shipping:
 
-- AES writes `<out>/<slug>-<fmt>.mp4` + `.srt`; a human copies them to
-  `youtube/long-form/`, `youtube/shorts/`, or `tiktok/shorts/`.
-- Metadata is hand-written Markdown (`youtube/metadata/youtube-metadata.md`,
-  `tiktok/metadata/tiktok-metadata-01.md`).
-- Neither YTA nor YAS reads those files. YTA generates and publishes its own
-  content; YAS writes text for a human to upload.
+- **Identity**: `sidecar_version` (`1.0`), `slug`, `title`, `subject`,
+  `age_band`, `lang`, `plan_version`.
+- **Deliverable**: `format`, `width`/`height`, `seconds`, `has_audio`, `video`,
+  `subtitles`, `technical_check` — file names only, resolved inside the card's
+  own directory.
+- **Rules**: a `sidecar_version` whose major is not `1` is rejected, a missing
+  required field is rejected, and `video` must be `<slug>-<format>.mp4`. The
+  majors follow the same convention as `props_version`.
 
-If this becomes automated, the contract needs a versioned sidecar (video, SRT,
-title/description/tags, aspect, disclosure) rather than folder conventions.
-That is a new feature and is out of scope for this phase.
+The copy itself is still manual: a human moves the video, the `.srt` and the
+card into `youtube/long-form/`, `youtube/shorts/`, or `tiktok/shorts/`.
+Description, tags and disclosure stay in the hand-written Markdown metadata
+(`youtube/metadata/youtube-metadata.md`, `tiktok/metadata/tiktok-metadata-01.md`)
+because no producer decides them. Neither YTA nor YAS reads the card; whoever
+automates the handoff must key on `sidecar_version` rather than on folder names.
 
 ## 5. Defects
 
@@ -219,5 +226,7 @@ arbiter; it must run after this phase is pushed.
 4. D8 — the `skill-mirror` CI job enforces the mirror.
 5. D10 — the auth findings from Phase 2 are closed: fail-closed binding,
    protected reads, constant-time comparison (see `PHASE5_FINAL_AUDIT.md`).
+6. C7 — the publishing handoff has a versioned sidecar; the file copy stays
+   manual.
 
 Remaining limits are recorded in `PHASE5_FINAL_AUDIT.md` rather than here.

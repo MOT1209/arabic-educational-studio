@@ -15,6 +15,9 @@ PLAN_VERSION = "1.0"
 # Version of the props object handed to remotion/render.mjs. Bump the major
 # part when a field changes meaning; render.mjs refuses a missing or unknown major.
 PROPS_VERSION = "1.0"
+# Version of the delivery sidecar written next to each rendered video (contract C7).
+# A consumer must reject a sidecar whose major it does not implement.
+SIDECAR_VERSION = "1.0"
 AGE_BANDS = ("preschool", "child", "preteen", "teen", "adult")
 # كلمات في الثانية للسرد (طبيعي، بطيء)
 WPS = {"preschool": (1.45, 0.75), "child": (1.7, 0.8), "preteen": (2.0, 1.0), "teen": (2.4, 1.3), "adult": (2.6, 1.5)}
@@ -383,6 +386,54 @@ def srt(props):
         s = fr / props["fps"]
         return f"{int(s // 3600):02d}:{int(s % 3600 // 60):02d}:{int(s % 60):02d},{int(round((s % 1) * 1000)) % 1000:03d}"
     return "\n".join(f"{i}\n{ts(c['from'])} --> {ts(c['to'])}\n{c['text']}\n" for i, c in enumerate(props["captions"], 1))
+
+
+SIDECAR_REQUIRED = ("sidecar_version", "slug", "title", "format", "video", "seconds", "has_audio")
+
+
+def sidecar(plan, fmt, video, srt=None, seconds=None, has_audio=None, technical_check=None):
+    """بطاقة تسليم مُرقّمة الإصدار (عقد C7) تُكتب بجانب الفيديو بدل الاعتماد على اسم المجلد.
+
+    `video` و`srt` اسمان فقط (بلا مسار): البطاقة تفترض أنهما في مجلدها نفسه.
+    """
+    return {
+        "sidecar_version": SIDECAR_VERSION,
+        "slug": plan.get("slug") or "lesson",
+        "title": plan["title"],
+        "subject": plan.get("subject"),
+        "age_band": plan["audience"]["age_band"],
+        "lang": plan["audience"].get("lang", "ar"),
+        "plan_version": plan.get("plan_version"),
+        "format": fmt,
+        "width": FORMATS[fmt][0],
+        "height": FORMATS[fmt][1],
+        "seconds": seconds,
+        "has_audio": has_audio,
+        "video": Path(video).name,
+        "subtitles": Path(srt).name if srt else None,
+        "technical_check": technical_check,
+    }
+
+
+def check_sidecar(doc):
+    """يتحقق من بطاقة تسليم قبل أن يستهلكها ناشر. يعيد قائمة أخطاء (فارغة = صالحة)."""
+    E = []
+    ver = doc.get("sidecar_version")
+    if not ver:
+        E.append("sidecar_version مفقود")
+    elif str(ver).split(".")[0] != SIDECAR_VERSION.split(".")[0]:
+        E.append(f"sidecar_version غير مدعوم: {ver} (المدعوم {SIDECAR_VERSION}.x)")
+    for k in SIDECAR_REQUIRED:
+        if doc.get(k) in (None, ""):
+            E.append(f"حقل مطلوب مفقود: {k}")
+    if doc.get("format") and doc["format"] not in FORMATS:
+        E.append(f"صيغة غير مدعومة: {doc['format']}")
+    for k in ("video", "subtitles"):
+        if doc.get(k) and Path(doc[k]).name != doc[k]:
+            E.append(f"{k} يجب أن يكون اسم ملف داخل مجلد البطاقة")
+    if doc.get("slug") and doc.get("video") and not doc["video"].startswith(doc["slug"] + "-"):
+        E.append("video لا يطابق الشكل <slug>-<format>")
+    return E
 
 
 def voice_lines(plan):

@@ -121,6 +121,17 @@ def run_node(props_json, out, pub, still=None, concurrency=None):
     return r.stdout
 
 
+def write_sidecar(plan, fmt, video, srt, item):
+    """يكتب `<name>-<fmt>.json` بجانب الفيديو (عقد C7) ويرفض بطاقة لا تجتاز التحقق."""
+    path = Path(video).with_suffix(".json")
+    doc = P.sidecar(plan, fmt, video, srt, item.get("seconds"), item.get("has_audio"), item.get("technical_check"))
+    problems = P.check_sidecar(doc)
+    if problems:
+        raise RenderError("بطاقة التسليم غير صالحة:\n- " + "\n- ".join(problems))
+    path.write_text(json.dumps(doc, ensure_ascii=False, indent=2), "utf-8")
+    return path
+
+
 def render(plan, out_dir, formats=None, audio_dir=None, captions=True, stills_only=False, check=True, concurrency=None):
     """يصيّر كل صيغة إلى out_dir/<name>-<fmt>.mp4 + .srt. يعيد تقريراً صادقاً بما فُحص."""
     E, W = P.validate(plan)
@@ -152,5 +163,6 @@ def render(plan, out_dir, formats=None, audio_dir=None, captions=True, stills_on
             r = subprocess.run(cmd, capture_output=True, text=True)
             item["technical_check"] = "passed" if r.returncode == 0 else "failed"
             item["check_log"] = (r.stdout + r.stderr)[-1500:]
+        item["sidecar"] = str(write_sidecar(plan, fmt, mp4, item["srt"], item))
         report["outputs"].append(item)
     return report
