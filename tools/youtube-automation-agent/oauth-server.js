@@ -2,6 +2,7 @@ const express = require('express');
 const { google } = require('googleapis');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 function esc(v) { return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
 const chalk = require('chalk');
@@ -10,13 +11,22 @@ class OAuthServer {
   constructor() {
     this.app = express();
     this.server = null;
+    this.expectedState = null;
     this.setupRoutes();
   }
 
   setupRoutes() {
     this.app.get('/auth/callback', async (req, res) => {
-      const { code, error } = req.query;
-      
+      const { code, error, state } = req.query;
+
+      // The port is reachable by anything running on this machine, so a
+      // callback is only accepted when it carries the state this run issued.
+      if (!this.stateMatches(state)) {
+        res.status(400).send('<h1>❌ Authorization Rejected</h1><p>The callback did not match the authorization request this process started.</p>');
+        return;
+      }
+      this.expectedState = null;
+
       if (error) {
         res.send(`<h1>❌ Authentication Error</h1><p>${esc(error)}</p>`);
         return;
@@ -65,6 +75,20 @@ class OAuthServer {
         </style>
       `);
     });
+  }
+
+  // A fresh random state per authorization request, never reused.
+  createState() {
+    this.expectedState = crypto.randomBytes(32).toString('hex');
+    return this.expectedState;
+  }
+
+  stateMatches(received) {
+    const expected = this.expectedState;
+    if (!expected || typeof received !== 'string' || received.length !== expected.length) {
+      return false;
+    }
+    return crypto.timingSafeEqual(Buffer.from(received), Buffer.from(expected));
   }
 
   async exchangeCodeForTokens(code) {
@@ -134,7 +158,8 @@ class OAuthServer {
     const authUrl = oauth2Client.generateAuthUrl({
       access_type: 'offline',
       scope: scopes,
-      prompt: 'consent'
+      prompt: 'consent',
+      state: this.createState()
     });
 
     console.log(chalk.cyan.bold('\n🎬 YouTube Automation Agent - OAuth Setup'));

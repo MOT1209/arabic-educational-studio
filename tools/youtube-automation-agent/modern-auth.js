@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
 const http = require('http');
+const crypto = require('crypto');
 const { URL } = require('url');
 function esc(v) { return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
 
@@ -11,6 +12,7 @@ class ModernAuth {
     this.credentialsPath = path.join(__dirname, 'config', 'credentials.json');
     this.tokensPath = path.join(__dirname, 'config', 'tokens.json');
     this.server = null;
+    this.expectedState = null;
   }
 
   async authenticate() {
@@ -49,11 +51,14 @@ class ModernAuth {
       // Start a temporary local server at the exact redirect URI used in the OAuth request.
       await this.startTempServer(redirect, oauth2Client);
       
-      // Generate auth URL
+      // Generate auth URL. The state value ties the callback to this process:
+      // anything else that reaches the loopback port is refused.
+      const state = this.createState();
       const authUrl = oauth2Client.generateAuthUrl({
         access_type: 'offline',
         scope: scopes,
-        prompt: 'consent'
+        prompt: 'consent',
+        state
       });
 
       console.log(chalk.cyan('🔗 Please visit this URL to authorize:'));
@@ -90,6 +95,20 @@ class ModernAuth {
     }
   }
 
+  // A fresh random state per authorization request, never reused.
+  createState() {
+    this.expectedState = crypto.randomBytes(32).toString('hex');
+    return this.expectedState;
+  }
+
+  stateMatches(received) {
+    const expected = this.expectedState;
+    if (!expected || typeof received !== 'string' || received.length !== expected.length) {
+      return false;
+    }
+    return crypto.timingSafeEqual(Buffer.from(received), Buffer.from(expected));
+  }
+
   resolveRedirect(credentials) {
     const explicitRedirect = process.env.YOUTUBE_REDIRECT_URI;
     const configured = [explicitRedirect, ...(credentials.youtube?.redirect_uris || [])].filter(Boolean);
@@ -122,6 +141,24 @@ class ModernAuth {
       const url = new URL(req.url, redirect.uri);
       
       if (url.pathname === redirect.pathname) {
+        // Any local process can reach this port, so the callback must prove it
+        // belongs to the authorization request this process started.
+        if (!this.stateMatches(url.searchParams.get('state'))) {
+          res.writeHead(400, { 'Content-Type': 'text/html' });
+          res.end(`
+            <h1>❌ Authorization Rejected</h1>
+            <p>The callback did not match the authorization request this process started.</p>
+            <p>You can close this window and retry from the terminal.</p>
+          `);
+          this.expectedState = null;
+          this.cleanup();
+          if (this.rejectAuth) {
+            this.rejectAuth(new Error('OAuth state mismatch: refusing a callback this process did not initiate'));
+          }
+          return;
+        }
+        this.expectedState = null;
+
         const code = url.searchParams.get('code');
         const error = url.searchParams.get('error');
         

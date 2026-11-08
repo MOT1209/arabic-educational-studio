@@ -37,6 +37,8 @@ class CredentialManager {
     try {
       const data = await fs.readFile(this.credentialsPath, 'utf8');
       this.credentials = JSON.parse(data);
+    // A file written before the 0600 policy can still be world-readable.
+    await fs.chmod(this.credentialsPath, 0o600).catch(() => {});
     } catch (error) {
       this.credentials = {};
     }
@@ -46,6 +48,8 @@ class CredentialManager {
     try {
       const data = await fs.readFile(this.tokensPath, 'utf8');
       this.tokens = JSON.parse(data);
+    // Same tightening for tokens written by older versions of the auth flows.
+    await fs.chmod(this.tokensPath, 0o600).catch(() => {});
     } catch (error) {
       this.tokens = {};
     }

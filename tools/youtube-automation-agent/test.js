@@ -42,6 +42,7 @@ class SystemTest {
       { name: 'Reported Discussion Fixes (#31, #73, #74)', test: () => this.testReportedDiscussionFixes() },
       { name: 'Resumable Generation Checkpoints', test: () => this.testResumableGenerationCheckpoints() },
       { name: 'API Validation and Security', test: () => this.testAPIValidationAndSecurity() },
+      { name: 'OAuth Callback Integrity', test: () => this.testOAuthCallbackIntegrity() },
       { name: 'Publishing Safety', test: () => this.testPublishingSafety() },
       { name: 'Multi-Provider Credential Validation', test: () => this.testCredentialValidation() },
       { name: 'AI Text Service Token Compatibility', test: () => this.testAITextServiceTokenParams() },
@@ -2179,6 +2180,12 @@ class SystemTest {
         await credentials.saveTokens();
         const mode = (await fs.stat(credentials.tokensPath)).mode & 0o777;
         if (mode !== 0o600) throw new Error(`Token file mode is ${mode.toString(8)}, expected 600`);
+
+        credentials.credentialsPath = path.join(directory, 'credentials.json');
+        await fs.writeFile(credentials.credentialsPath, '{}', { mode: 0o644 });
+        await credentials.loadCredentials();
+        const credentialMode = (await fs.stat(credentials.credentialsPath)).mode & 0o777;
+        if (credentialMode !== 0o600) throw new Error(`Credentials file mode is ${credentialMode.toString(8)}, expected 600`);
       }
     } finally {
       AITextService.prototype.generateText = originalGenerateText;
@@ -2190,6 +2197,57 @@ class SystemTest {
     }
 
     this.logger.info('Reported issue fix tests completed successfully');
+  }
+
+  async testOAuthCallbackIntegrity() {
+    const http = require('http');
+    const os = require('os');
+    const { ModernAuth } = require('./modern-auth');
+    const { OAuthServer } = require('./oauth-server');
+
+    // The comparator must accept only the exact state the flow issued.
+    const auth = new ModernAuth();
+    auth.expectedState = 'state-issued-by-this-flow';
+    if (!auth.stateMatches('state-issued-by-this-flow')) {
+      throw new Error('OAuth state comparator rejected the state it issued');
+    }
+    if (auth.stateMatches('foreign-state') || auth.stateMatches(null) || auth.stateMatches('')) {
+      throw new Error('OAuth state comparator accepted a state this flow did not issue');
+    }
+
+    // A callback carrying a foreign state must be refused before the code is exchanged.
+    const exchanged = [];
+    const modern = new ModernAuth();
+    modern.tokensPath = path.join(os.tmpdir(), `yaa-oauth-tokens-${process.pid}.json`);
+    modern.expectedState = 'expected-state';
+    await modern.startTempServer(
+      { uri: 'http://127.0.0.1:0/', hostname: '127.0.0.1', port: 0, pathname: '/' },
+      { getToken: async (code) => { exchanged.push(code); return { tokens: {} }; } }
+    );
+    const modernStatus = await new Promise((resolve, reject) => {
+      http.get(`http://127.0.0.1:${modern.server.address().port}/?code=foreign-code&state=foreign-state`, (res) => {
+        res.resume();
+        resolve(res.statusCode);
+      }).on('error', reject);
+    });
+    modern.cleanup();
+    if (modernStatus !== 400) throw new Error(`OAuth callback with a foreign state returned ${modernStatus}, expected 400`);
+    if (exchanged.length) throw new Error('OAuth exchanged a code that arrived without the issued state');
+
+    // The legacy callback server must refuse a callback when no flow is pending.
+    const legacy = new OAuthServer();
+    const legacyServer = legacy.app.listen(0, '127.0.0.1');
+    await new Promise((resolve) => legacyServer.once('listening', resolve));
+    const legacyStatus = await new Promise((resolve, reject) => {
+      http.get(`http://127.0.0.1:${legacyServer.address().port}/auth/callback?code=orphan-code&state=whatever`, (res) => {
+        res.resume();
+        resolve(res.statusCode);
+      }).on('error', reject);
+    });
+    await new Promise((resolve) => legacyServer.close(resolve));
+    if (legacyStatus !== 400) throw new Error(`Legacy OAuth callback without a pending flow returned ${legacyStatus}, expected 400`);
+
+    this.logger.info('OAuth callback integrity verified');
   }
 
   async testOpenIssueRegressions() {
