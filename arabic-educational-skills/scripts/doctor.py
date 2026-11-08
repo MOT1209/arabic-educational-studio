@@ -7,6 +7,13 @@ import subprocess
 import sys
 from pathlib import Path
 
+# A Windows console defaults to a legacy code page (e.g. cp1256) that cannot
+# encode the check marks below, which used to abort the whole check.
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+except (AttributeError, OSError):
+    pass
+
 SKILL = Path(__file__).resolve().parent.parent
 ok_all = True
 
