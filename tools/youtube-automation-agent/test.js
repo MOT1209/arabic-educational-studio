@@ -2163,9 +2163,17 @@ class SystemTest {
       try {
         await server.start();
         if (listenArgs?.host !== '127.0.0.1') throw new Error(`Dashboard server bound to ${listenArgs?.host} instead of loopback by default`);
+        // A non-loopback bind is only honoured once the API is keyed.
         process.env.HOST = '0.0.0.0';
-        await server.start();
-        if (listenArgs?.host !== '0.0.0.0') throw new Error('HOST did not override the dashboard bind address');
+        const apiKeyBeforeBind = process.env.API_KEY;
+        process.env.API_KEY = 'bind-test-key';
+        try {
+          await server.start();
+          if (listenArgs?.host !== '0.0.0.0') throw new Error('HOST did not override the dashboard bind address when API_KEY was set');
+        } finally {
+          if (apiKeyBeforeBind === undefined) delete process.env.API_KEY;
+          else process.env.API_KEY = apiKeyBeforeBind;
+        }
       } finally {
         console.log = quietLog;
         delete process.env.HOST;
