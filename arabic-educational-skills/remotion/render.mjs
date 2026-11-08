@@ -5,6 +5,7 @@ import {renderMedia, renderStill, selectComposition} from '@remotion/renderer';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {propsVersionError} from './props-version.mjs';
 
 const args = process.argv.slice(2);
 const [propsPath, out, publicDir] = args;
@@ -13,10 +14,11 @@ if (!propsPath || !out || !publicDir) {
   process.exit(2);
 }
 const opt = (k) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : undefined; };
-const PROPS_MAJOR = '1';
 const inputProps = JSON.parse(fs.readFileSync(propsPath, 'utf8'));
-if (inputProps.props_version && String(inputProps.props_version).split('.')[0] !== PROPS_MAJOR) {
-  console.error(`unsupported props_version ${inputProps.props_version}; this renderer implements ${PROPS_MAJOR}.x`);
+// Props بدون إصدار لا تُقبل: كل ملف ينتجه studio plan render يحمل props_version.
+const versionError = propsVersionError(inputProps);
+if (versionError) {
+  console.error(versionError);
   process.exit(2);
 }
 const here = path.dirname(fileURLToPath(import.meta.url));

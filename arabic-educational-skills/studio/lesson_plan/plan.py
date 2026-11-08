@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 PLAN_VERSION = "1.0"
 # Version of the props object handed to remotion/render.mjs. Bump the major
-# part when a field changes meaning; render.mjs refuses unknown majors.
+# part when a field changes meaning; render.mjs refuses a missing or unknown major.
 PROPS_VERSION = "1.0"
 AGE_BANDS = ("preschool", "child", "preteen", "teen", "adult")
 # كلمات في الثانية للسرد (طبيعي، بطيء)

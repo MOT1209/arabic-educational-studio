@@ -176,7 +176,7 @@ That is a new feature and is out of scope for this phase.
 | D2 | `arabic-educational-skills` has no Python dependency manifest; its test dependencies exist only in the CI command, unpinned | no `requirements*.txt`/`pyproject.toml`; CI installs inline | **Fixed (Phase 5)** — `requirements-dev.txt` added; CI and all three READMEs install from it |
 | D3 | AES CI installed `pyyaml`, which no AES Python file imports | `grep -rn "yaml" arabic-educational-skills --include=*.py` → no matches | **Fixed** — removed from the CI install |
 | D4 | `tools/README.md` claimed the tools' `node_modules` were installed and `.env` created, and told readers to update with `git pull` from a directory with no `.git` | file content vs `find tools -name .git` and the real tree | **Fixed** — rewritten as a boundary map |
-| D5 | The Remotion props JSON has no version field; only `PLAN_VERSION` gates the plan | `plan.render_props()` output keys | **Fixed (Phase 5)** — `props_version: "1.0"` in the props; `render.mjs` refuses an unknown major with exit 2, covered by `test_plan.py` |
+| D5 | The Remotion props JSON has no version field; only `PLAN_VERSION` gates the plan | `plan.render_props()` output keys | **Fixed (Phase 5)** — `props_version: "1.0"` in the props; `render.mjs` refuses a missing or unknown major with exit 2, covered by `test_plan.py` |
 | D6 | Two deliverable trees with conflicting ignore rules: `youtube/*.mp4` are tracked despite `*.mp4`; `projects/project-01-inna/exports/scene_01.mp4` is tracked despite `**/exports/` | `git ls-files` | **Fixed (Phase 5)** — the four mp4s are untracked (`git rm --cached`); the files remain on disk |
 | D7 | Empty legacy directories `TIK TOK/` and `YOU TUBE/shorts y` remain from the pre-`projects/` layout | `find` shows no files; `git ls-files` shows none | **Fixed (Phase 5)** — both empty trees removed (they held no tracked files) |
 | D8 | `.claude/skills/` mirror can drift silently; no CI check compares it with `tools/*/skills/` | manual `diff -rq` passes today | **Fixed (Phase 5)** — `skill-mirror` CI job diffs each mirror and its source, and checks the directory count |
@@ -212,8 +212,8 @@ arbiter; it must run after this phase is pushed.
 ## 7. Decisions resolved in Phase 5
 
 1. D2 — `requirements-dev.txt` added; CI and the READMEs install from it.
-2. D5 — the props object carries `props_version`, and `render.mjs` rejects an
-   unknown major.
+2. D5 — the props object carries `props_version`, and `render.mjs` rejects a
+   missing or unknown major.
 3. D6/D7 — the stray mp4s are untracked (kept on disk) and both empty legacy
    directories were removed.
 4. D8 — the `skill-mirror` CI job enforces the mirror.

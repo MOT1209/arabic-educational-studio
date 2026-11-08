@@ -25,7 +25,9 @@ is gated at runtime by `postingEnabled` and the reply-approval flow.
   dependencies (`pytest`, `jsonschema`, `pillow`, `numpy`). CI installs from the
   file, and all three READMEs do the same. The unused `pyyaml` is gone.
 - **D5**: `render_props()` emits `props_version: "1.0"`; `render.mjs` exits 2 on
-  an unknown major. `test_plan.py` asserts the version is present.
+  a missing or unknown major (the guard lives in `remotion/props-version.mjs` so
+  it is testable without Remotion installed). `test_plan.py` asserts the version
+  is present and that the guard rejects props without it.
 - **D8**: new `skill-mirror` CI job diffs every `.claude/skills/<name>` against
   `tools/*/skills/<name>` (excluding untracked `__pycache__`) and fails if the
   directory count differs.

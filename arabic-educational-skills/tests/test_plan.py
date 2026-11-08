@@ -156,6 +156,26 @@ needs_engine = pytest.mark.skipif(not (shutil.which("node") and (ROOT / "remotio
                                   reason="Remotion غير مثبت")
 
 
+@pytest.mark.skipif(not shutil.which("node"), reason="node غير مثبت")
+def test_render_refuses_props_without_version():
+    """render.mjs لا يقبل props بلا props_version، ويرفض إصدارًا رئيسيًا غير مدعوم."""
+    guard = json.dumps((ROOT / "remotion" / "props-version.mjs").as_uri())
+    script = f"""
+import {{propsVersionError}} from {guard};
+const cases = [[{{}}, true], [{{props_version: '1.4'}}, false], [{{props_version: 1}}, false], [{{props_version: '2.0'}}, true]];
+for (const [props, mustFail] of cases) {{
+  const message = propsVersionError(props);
+  if (Boolean(message) !== mustFail) {{
+    console.error(JSON.stringify(props) + ' -> ' + message);
+    process.exit(1);
+  }}
+}}
+"""
+    r = subprocess.run([shutil.which("node"), "--input-type=module", "-e", script],
+                       cwd=ROOT, capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr or r.stdout
+
+
 @needs_engine
 def test_stills_render_all_formats(tmp_path):
     from studio.lesson_plan import render as R
