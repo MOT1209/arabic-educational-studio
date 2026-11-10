@@ -1,7 +1,7 @@
 {
   "name": "aes-remotion-engine",
   "private": true,
-  "version": "1.0.0",
+  "version": "5.2.3",
   "description": "محرك تصيير خطط الدروس العامة (lesson-plan v1) بـ Remotion — 16:9 و9:16 و1:1",
   "type": "module",
   "scripts": {

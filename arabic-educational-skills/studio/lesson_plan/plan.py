@@ -27,6 +27,7 @@ MAX_BLOCK = {"preschool": 20, "child": 25, "preteen": 35, "teen": 45, "adult": 6
 THEMES = ("classroom", "chalkboard", "paper", "minimal", "night")
 FORMATS = {"16:9": (1920, 1080), "9:16": (1080, 1920), "1:1": (1080, 1080)}
 AVATARS = ("letter_buddy", "none")
+FONTS = ("noto_sans", "playpen", "scheherazade", "amiri", "naskh", "lemonada")
 AUDIO_EXT = (".wav", ".mp3", ".m4a", ".ogg")
 FPS = 30
 MIN_VISUAL = 2.0
@@ -212,6 +213,8 @@ def validate(plan):
     style = plan.get("style", {})
     if style.get("theme", "classroom") not in THEMES:
         E.append(f"style.theme غير معروف: {style.get('theme')} (المتاح: {', '.join(THEMES)})")
+    if style.get("font", "noto_sans") not in FONTS:
+        E.append(f"style.font غير معروف: {style.get('font')} (المتاح: {', '.join(FONTS)})")
     for f in plan.get("formats", ["16:9"]):
         if f not in FORMATS:
             E.append(f"صيغة غير مدعومة: {f} (المتاح: {', '.join(FORMATS)})")
@@ -351,7 +354,7 @@ def render_props(plan, fmt, audio_dir=None, captions=True):
                [[blk["from"] + s["from"], blk["from"] + s["to"] - 6] for blk in blocks for s in blk["segments"] if s["kind"] == "speech"]
     return {"props_version": PROPS_VERSION, "fps": FPS, "width": w, "height": h, "format": fmt, "durationInFrames": total,
             "title": plan["title"], "theme": plan.get("style", {}).get("theme", "classroom"),
-            "accent": plan.get("style", {}).get("accent"), "age_band": plan["audience"]["age_band"],
+            "accent": plan.get("style", {}).get("accent"), "font": plan.get("style", {}).get("font", "noto_sans"), "age_band": plan["audience"]["age_band"],
             "narrator": {"avatar": plan.get("narrator", {}).get("avatar", "letter_buddy"),
                          "letter": plan.get("narrator", {}).get("avatar_letter", "ض"),
                          "name": plan.get("narrator", {}).get("name", "")},

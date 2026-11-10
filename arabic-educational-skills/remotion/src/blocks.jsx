@@ -2,6 +2,7 @@ import React, {useLayoutEffect, useRef, useState} from 'react';
 import {AbsoluteFill, Img, continueRender, delayRender, interpolate, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {pop, fadeIn, seg} from './anim.js';
 import {FONT} from './theme.js';
+import EMOJI from './emojiMap.json';
 import {LetterTrace} from './Trace.jsx';
 
 const DIGITS = ['١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
@@ -96,7 +97,8 @@ const Placeholder = ({concept, theme, L, size = 300}) => (
 
 const Picture = ({block, theme, L, size = 300}) => block.asset_src
   ? <Img src={staticFile(block.asset_src)} style={{width: size * L.s, height: size * L.s, objectFit: 'contain', borderRadius: 30 * L.s}} />
-  : (block.concept ? <Placeholder concept={block.concept} theme={theme} L={L} size={size} /> : null);
+  : (block.concept && EMOJI[block.concept] ? <Img src={staticFile(`emoji/${EMOJI[block.concept]}.svg`)} style={{width: size * L.s, height: size * L.s, objectFit: 'contain'}} />
+  : block.concept ? <Placeholder concept={block.concept} theme={theme} L={L} size={size} /> : null);
 
 // ---------------------------------------------------------------- الكتل
 const Title = ({block, theme, L}) => {

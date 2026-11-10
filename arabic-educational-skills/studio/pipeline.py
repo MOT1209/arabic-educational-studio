@@ -91,7 +91,10 @@ def default_agents(project, styles=None, providers=None):
         if st and st["render_support"] == "provider_required":
             blocked.append(f"style '{st['id']}' needs an image/video provider; none implemented or allowed")
         if b["narration"]["mode"] == "tts_service":
-            blocked.append("narration mode tts_service has no implemented provider")
+            try:
+                pm.require("speech")
+            except ProviderNotImplemented:
+                blocked.append("narration mode tts_service needs a local TTS model: set AES_LOCAL_TTS_CMD (see studio/providers/local_tts.py)")
         from .core.cost import CostManager
         return {"estimate": CostManager.estimate(items), "items": items, "blocked": blocked, "scenes": len(sc["scenes"]),
                 "required_assets": sorted({a for s in ctx["inputs"]["storyboard"]["shots"] for a in s["required_assets"]}),
@@ -126,20 +129,28 @@ def default_agents(project, styles=None, providers=None):
         mode = b["narration"]["mode"]
         if mode == "subtitles_only":
             return {"mode": mode, "audio": None, "note": "لا صوت: الفيديو بترجمة مكتوبة فقط"}
+        tts = None
         if mode == "tts_service":
-            ProviderManager(b.get("constraints", {})).require("speech")      # يرمي ProviderNotImplemented
+            tts = ProviderManager(b.get("constraints", {})).synthesizer()      # يرمي ProviderNotImplemented
         from importlib import util
         spec = util.spec_from_file_location("aes_common", ROOT / "scripts" / "aes_common.py")
         m = util.module_from_spec(spec); spec.loader.exec_module(m)
-        doc, missing, found = ctx["inputs"]["script"], [], []
+        doc, missing, found, synthesized = ctx["inputs"]["script"], [], [], []
         for sc in doc["scenes"]:
             for i, d in enumerate(sc.get("dialogue", []), 1):
                 lid = m.line_id(sc, i, d)
                 hit = next((p for e in ("wav", "mp3", "m4a", "ogg", "flac") if (p := root / "audio" / f"{lid}.{e}").exists()), None)
+                if not hit and tts:
+                    try:
+                        tts.synthesize(d.get("tts_text") or d["text_diacritized"], root / "audio" / f"{lid}.wav")
+                        hit = True; synthesized.append(lid)
+                    except Exception as e:
+                        raise PipelineError(f"local TTS failed on {lid}: {e}")
                 (found if hit else missing).append(lid)
         if missing:
             raise PipelineError(f"{len(missing)} recording(s) missing in audio/ (first: {missing[:3]}). Run scripts/voice_pack.py to get the recording pack, record, then retry.")
-        return {"mode": mode, "audio_files": len(found)}
+        return {"mode": mode, "audio_files": len(found), "synthesized_locally": len(synthesized),
+                "needs_human": ["استمع للأسطر المولَّدة آلياً قبل النشر (النطق والتشكيل)"] if synthesized else []}
 
     def editing(ctx):
         v = ctx["inputs"]["visual_production"]

@@ -140,6 +140,16 @@ def cmd_lesson(a):
          "pending_human_review": len(lesson["review"]["needs_human_review"]), "written": str(d)})
 
 
+def cmd_song(a):
+    """أنشودة حرف: يولّد خطة «أنا الحرف…» ثم صيّرها بـ plan stills/render."""
+    from .systems.kids_song.letter_song import build_song_plan
+    pl = build_song_plan(a.letter, n_words=a.words, formats=tuple(a.formats.split(",")), font=a.font,
+                         variants=tuple(a.variants.split(",")))
+    Path(a.out).write_text(json.dumps(pl, ensure_ascii=False, indent=2), "utf-8")
+    out({"written": a.out, "blocks": len(pl["blocks"]), "variants": pl["song"]["variants"]})
+    return 0
+
+
 def cmd_plan(a):
     """خطة درس عامة لأي مادة: validate | timeline | voice | stills | render."""
     plan = LP.load(a.plan)
@@ -252,6 +262,9 @@ def main(argv=None):
         (("--age",), {"default": "child"}), (("--lang",), {"default": "ar"}), (("--taught",), {"default": ""}), (("--ledger",), {"default": None}),
         (("--profile",), {"default": "preschool", "choices": ["preschool", "standard"]}),
         (("--theme",), {"default": "classroom", "choices": list(LP.THEMES)}))
+    add("song", cmd_song, (("letter",), {}), (("--out",), {"required": True}), (("--words",), {"type": int, "default": 3}),
+        (("--formats",), {"default": "9:16"}), (("--font",), {"default": "playpen", "choices": list(LP.FONTS)}),
+        (("--variants",), {"default": "with_rhythm,vocals_only"}))
     add("plan", cmd_plan, (("action",), {"choices": ["validate", "timeline", "voice", "stills", "render"]}), (("plan",), {}),
         (("--out",), {"default": None}), (("--formats",), {"default": None}), (("--audio",), {"default": None}),
         (("--no-captions",), {"action": "store_true"}), (("--concurrency",), {"type": int, "default": None}))

@@ -79,6 +79,9 @@ def prepare(plan, fmt, work, audio_dir=None, captions=True):
     (pub / "fonts").mkdir(parents=True)
     for f in FONTS.glob("*.woff2"):
         shutil.copy(f, pub / "fonts" / f.name)
+    emoji = P.ROOT / "assets" / "emoji"
+    if emoji.is_dir():
+        shutil.copytree(emoji, pub / "emoji")
     props = P.render_props(plan, fmt, audio_dir, captions)
     if props["audio"]:
         (pub / "audio").mkdir()

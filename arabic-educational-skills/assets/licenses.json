@@ -1,0 +1,57 @@
+{
+ "fonts": {
+  "noto_sans": {
+   "name": "Noto Sans Arabic",
+   "license": "OFL-1.1",
+   "file": "assets/licenses/noto-sans-OFL.txt",
+   "credit_required": false
+  },
+  "playpen": {
+   "name": "Playpen Sans Arabic",
+   "license": "OFL-1.1",
+   "file": "assets/licenses/playpen-sans-arabic-OFL.txt",
+   "credit_required": false,
+   "note": "يدوي طفولي — للأطفال الصغار"
+  },
+  "scheherazade": {
+   "name": "Scheherazade New",
+   "license": "OFL-1.1",
+   "file": "assets/licenses/scheherazade-new-OFL.txt",
+   "credit_required": false,
+   "note": "تشكيل واضح — للدروس النحوية"
+  },
+  "amiri": {
+   "name": "Amiri",
+   "license": "OFL-1.1",
+   "file": "assets/licenses/amiri-OFL.txt",
+   "credit_required": false,
+   "note": "نسخ كلاسيكي"
+  },
+  "naskh": {
+   "name": "Noto Naskh Arabic",
+   "license": "OFL-1.1",
+   "file": "assets/licenses/noto-naskh-arabic-OFL.txt",
+   "credit_required": false
+  },
+  "lemonada": {
+   "name": "Lemonada",
+   "license": "OFL-1.1",
+   "file": "assets/licenses/lemonada-OFL.txt",
+   "credit_required": false,
+   "note": "مرِح للعناوين"
+  }
+ },
+ "emoji": {
+  "name": "Noto Emoji (via @svgmoji/noto)",
+  "license": "Apache-2.0 (upstream Google) / MIT (package)",
+  "file": "assets/licenses/svgmoji-noto-MIT.txt",
+  "credit_required": false,
+  "map": "assets/emoji_map.json",
+  "dir": "assets/emoji"
+ },
+ "avoid": [
+  "Twemoji (CC-BY: يحتاج نسب)",
+  "OpenMoji (CC-BY-SA)",
+  "أي صور/شخصيات محمية"
+ ]
+}
