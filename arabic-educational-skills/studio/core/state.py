@@ -1,22 +1,12 @@
 """حالة المشروع: ملف project.json + مراجعات مخرجات غير قابلة للتعديل artifacts/<stage>/r<N>.json.
 الكتابة ذرّية (tmp + replace) ومحمية بقفل ملف لتفادي التعارض بين عمليتين."""
+import fcntl
 import json
 import os
 import tempfile
 import time
 import unicodedata
 import uuid
-
-try:
-    import fcntl
-    _HAS_FCNTL = True
-except ImportError:
-    _HAS_FCNTL = False
-    try:
-        import msvcrt
-        _HAS_MSVCRT = True
-    except ImportError:
-        _HAS_MSVCRT = False
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -75,19 +65,10 @@ class Project:
     def lock(self):
         (self.root / ".lock").touch()
         with open(self.root / ".lock", "w") as lf:
-            if _HAS_FCNTL:
-                fcntl.flock(lf, fcntl.LOCK_EX)
-            elif _HAS_MSVCRT:
-                msvcrt.locking(lf.fileno(), msvcrt.LK_LOCK, 1)
+            fcntl.flock(lf, fcntl.LOCK_EX)
             self.data = json.loads(self.file.read_text("utf-8"))   # أعد القراءة بعد الحصول على القفل
             yield
-            if _HAS_FCNTL:
-                fcntl.flock(lf, fcntl.LOCK_UN)
-            elif _HAS_MSVCRT:
-                try:
-                    msvcrt.locking(lf.fileno(), msvcrt.LK_UNLCK, 1)
-                except OSError:
-                    pass
+            fcntl.flock(lf, fcntl.LOCK_UN)
 
     def save(self):
         atomic_write(self.file, json.dumps(self.data, ensure_ascii=False, indent=2))

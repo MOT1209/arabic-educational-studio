@@ -6,17 +6,19 @@ import {Block} from './blocks.jsx';
 import {LetterBuddy} from './LetterBuddy.jsx';
 
 // تحميل الخط المضمَّن قبل أول إطار (وإلا يتبدل الخط أثناء التصيير)
-const useFonts = () => {
+export const FONT_FILES = {noto_sans: 'noto-sans-arabic', playpen: 'playpen-sans-arabic', scheherazade: 'scheherazade-new', amiri: 'amiri', naskh: 'noto-naskh-arabic', lemonada: 'lemonada'};
+const useFonts = (fontId) => {
+  const base = FONT_FILES[fontId] || FONT_FILES.noto_sans;
   const [handle] = useState(() => delayRender('fonts'));
   useEffect(() => {
     const faces = [
-      new FontFace('AES Arabic', `url(${staticFile('fonts/noto-sans-arabic-arabic-400-normal.woff2')})`, {weight: '400'}),
-      new FontFace('AES Arabic', `url(${staticFile('fonts/noto-sans-arabic-arabic-700-normal.woff2')})`, {weight: '700'}),
+      new FontFace('AES Arabic', `url(${staticFile('fonts/' + base + '-arabic-400-normal.woff2')})`, {weight: '400'}),
+      new FontFace('AES Arabic', `url(${staticFile('fonts/' + base + '-arabic-700-normal.woff2')})`, {weight: '700'}),
     ];
     Promise.all(faces.map((f) => f.load().then((ff) => document.fonts.add(ff))))
       .then(() => continueRender(handle))
       .catch((e) => { console.error(e); continueRender(handle); });
-  }, [handle]);
+  }, [handle, base]);
 };
 
 export const layoutFor = (width, height, hasAvatar) => {
@@ -77,7 +79,7 @@ const Progress = ({blocks, theme, width}) => {
 };
 
 export const Lesson = (props) => {
-  useFonts();
+  useFonts(props.font);
   const {width, height} = useVideoConfig();
   const frame = useCurrentFrame();
   const theme = getTheme(props.theme, props.accent);

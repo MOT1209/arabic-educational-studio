@@ -169,3 +169,96 @@ def test_cli_lesson_and_new_status(tmp_path):
 def test_e2e_alif_video(tmp_path):
     r = subprocess.run([sys.executable, str(ROOT / "tests" / "e2e_alif.py"), str(tmp_path / "e2e")], capture_output=True, text=True, timeout=1800)
     assert r.returncode == 0, r.stdout[-1500:] + r.stderr[-800:]
+
+
+# ---------- النموذج الصوتي المحلي (منفذ بلا نموذج) ----------
+def _fake_tts(tmp_path, body):
+    s = tmp_path / "fake_tts.py"
+    s.write_text(body, "utf-8")
+    return f"{sys.executable} {s} {{text_file}} {{out}}"
+
+
+def test_local_tts_unconfigured_is_not_implemented(monkeypatch):
+    monkeypatch.delenv("AES_LOCAL_TTS_CMD", raising=False)
+    pm = ProviderManager()
+    assert pm.get("local_tts")["status"] == "not_implemented"
+    with pytest.raises(ProviderNotImplemented):
+        pm.require("speech")
+
+
+def test_local_tts_with_command_synthesizes(tmp_path):
+    cmd = _fake_tts(tmp_path, "import sys\nopen(sys.argv[2],'wb').write(b'RIFF'+open(sys.argv[1],'rb').read())\n")
+    pm = ProviderManager(tts_config={"cmd": cmd})
+    assert pm.require("speech")["id"] == "local_tts"
+    out = pm.synthesizer().synthesize("بَاب", tmp_path / "a" / "x.wav")
+    assert Path(out).stat().st_size > 4
+
+
+def test_local_tts_failures_are_reported(tmp_path):
+    from studio.providers.local_tts import LocalTTSError
+    pm = ProviderManager(tts_config={"cmd": _fake_tts(tmp_path, "import sys; sys.exit(3)\n")})
+    with pytest.raises(LocalTTSError):
+        pm.synthesizer().synthesize("x", tmp_path / "o.wav")
+    pm = ProviderManager(tts_config={"cmd": _fake_tts(tmp_path, "pass\n")})          # ينجح ولا يكتب شيئاً
+    with pytest.raises(LocalTTSError):
+        pm.synthesizer().synthesize("x", tmp_path / "o2.wav")
+    assert not ProviderManager(tts_config={"cmd": "no-such-binary-xyz {text_file} {out}"}).get("local_tts")["status"] == "implemented"
+
+
+def test_style_interview_and_letter_song():
+    from studio.agents import style_interview as SI
+    from studio.systems.kids_song.letter_song import build_song_plan
+    from studio.lesson_plan import plan as P
+    assert SI.questions_for("ب")[0]["key"] == "style" and any(q["key"] == "audio" for q in SI.questions_for("ب"))
+    assert not any(q["key"] == "audio" for q in SI.questions_for("الخبر"))
+    r = SI.build_request("ب", {"style": "song", "audio": "both"})
+    assert r["variants"] == ["with_rhythm", "vocals_only"] and r["generator"] == "kids_song.letter_song"
+    import pytest
+    with pytest.raises(ValueError):
+        SI.build_request("الخبر", {"style": "song"})
+    for l in "بتم":
+        E, _ = P.validate(build_song_plan(l))
+        assert not E, E
+    bad = build_song_plan("ب"); bad["style"]["font"] = "comic"
+    assert any("style.font" in e for e in P.validate(bad)[0])
+
+
+def test_song_words_always_have_pictures():
+    import json
+    from pathlib import Path
+    from studio.systems.kids_song.letter_song import build_song_plan
+    M = json.loads((Path(__file__).resolve().parent.parent / "assets" / "emoji_map.json").read_text("utf-8"))
+    for l in "ابتثجحخدذرزسشصضطظعغفقكلمنهوي":
+        for b in build_song_plan(l)["blocks"]:
+            if b["type"] == "word":
+                assert b["concept"] in M, (l, b["word"])
+
+
+def test_voice_local_batch_with_fake_silma(tmp_path, monkeypatch):
+    """يتحقق من التوصيل (قراءة الخطة ← أسطر ← دفعة ← ملفات) بوحدة silma_tts مزيّفة؛ لا يختبر جودة SILMA الحقيقية."""
+    import json, sys, types, wave
+    from studio.systems.kids_song.letter_song import build_song_plan
+    sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parent.parent / "scripts"))
+    import voice_local
+    plan = tmp_path / "p.json"
+    plan.write_text(json.dumps(build_song_plan("ب"), ensure_ascii=False), "utf-8")
+    ref = tmp_path / "ref.wav"
+    with wave.open(str(ref), "wb") as w:
+        w.setnchannels(1); w.setsampwidth(2); w.setframerate(24000); w.writeframes(b"\0\0" * 2400)
+    (tmp_path / "voice.config.json").write_text(json.dumps({"ref_audio": str(ref), "ref_text": "x"}), "utf-8")
+    calls = []
+    class FakeTTS:
+        def __init__(self, **k): pass
+        def infer(self, ref_file, ref_text, gen_text, file_wave, **k):
+            calls.append(gen_text)
+            with wave.open(file_wave, "wb") as w:
+                w.setnchannels(1); w.setsampwidth(2); w.setframerate(24000); w.writeframes(b"\0\0" * 4800)
+    api = types.ModuleType("silma_tts.api"); api.SilmaTTS = FakeTTS
+    monkeypatch.setitem(sys.modules, "silma_tts", types.ModuleType("silma_tts"))
+    monkeypatch.setitem(sys.modules, "silma_tts.api", api)
+    monkeypatch.setattr("silma_tts_cmd.install_audio_io_patch", lambda: None, raising=False)
+    assert voice_local.main([str(plan)]) == 0
+    n = len(list((tmp_path / "audio").glob("*.wav")))
+    assert n == len(calls) > 3
+    calls.clear()
+    assert voice_local.main([str(plan)]) == 0 and not calls      # الاستكمال: لا يعيد الموجود
